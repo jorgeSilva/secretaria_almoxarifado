@@ -4,6 +4,7 @@ import style from './style.module.css'
 const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
 
   const [input, setInput] = React.useState(null)
+  const [update, setUpdate] = React.useState(false)
   
   const handleInput = (e) => {
     setInput(e.target.value)
@@ -16,9 +17,20 @@ const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
     uppercase = unidadeMedida.toUpperCase()
   }
 
+  const handleClick = () => {
+    setUpdate(!update)
+  }
+
+  const handleAtt = () => {
+  /*   transformTrue()
+    alert('Pedido solicitado para Gerente de Logistica.')
+    window.location.reload() */
+  }
+
+
   return (
     <>
-      <div className={style.card__container}>
+      <button onClick={handleClick} className={style.card__container}>
         <div className={style.card__content}>
           <div className={`${style.card__textbox} ${style.card__password}`}>
             <input
@@ -55,8 +67,21 @@ const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
 
             <label htmlFor={nome}>Unidade de Medida</label>
           </div>
+
+          { 
+            update &&
+            <div className={style.card__button__updateRT}>
+              <button onClick={handleAtt} className={style.card__button__editar}>
+                Editar
+              </button>
+              
+              <button onClick={handleAtt} className={style.card__button__excluir}>
+                Excluir
+              </button>
+            </div>
+          }
         </div>
-      </div>
+      </button>
     </>
   )
 }
