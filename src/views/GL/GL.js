@@ -9,6 +9,7 @@ import {ReactComponent as SVGEstatistica} from  '../../assets/iconEstatisticas.s
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
 import Card from '../../components/Card/Card'
 import CardSolicit from '../../components/CardSolicitGL/CardSolicit'
+import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
 
 
 const GL = () => {
@@ -18,6 +19,7 @@ const GL = () => {
   const [data, setData] = React.useState(null)
   const [produtos, setProdutos] = React.useState(null)
   const [solicitados, setSolicitados] = React.useState(false)
+  const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
 
   async function getUser(){
     const {data} = await api.get(`/usuario/${url}`)
@@ -45,6 +47,12 @@ const GL = () => {
         .catch(error => console.log(error))
   }
 
+  async function getShowSolicitados(){
+    await api.get(`/rt`)
+      .then(({data}) => setDataShowSolicitados(data))
+        .catch(e => console.log(e))
+  }
+
 /* -----------------ESTADOS FRONT-END ------------------------  */
 
   const [name, setName] = React.useState('')
@@ -57,6 +65,7 @@ const GL = () => {
   const [dataSearch, setDataSearch] = React.useState([])
   const [envioEsc, setEnvioEsc] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
+  const [existShowSl, setExistShowSl] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
     const lowerCase = search.toLocaleLowerCase()
@@ -98,6 +107,12 @@ const GL = () => {
     setProdLict('')
     setProdLictEsc('')
     setHistoLicit('active')
+
+    if(dataShowSolicitados == false){
+      setExistShowSl(false)
+    }else{
+      setExistShowSl(dataShowSolicitados)
+    }
   }
 
   React.useEffect(() => {
@@ -107,6 +122,7 @@ const GL = () => {
     getUser()
     getProdutos()
     getSolicitados()
+    getShowSolicitados()
   }, [])
 
   React.useEffect(() => {
@@ -224,6 +240,12 @@ const GL = () => {
                   <h2 className={style.body__title}>Enviar às escolas</h2>
                   <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Enviar para escola".</p>
                 </div>
+                || 
+                histoLicit && 
+                <div className={style.body__container__title_subtitle}>
+                  <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
+                  <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
+                </div>
               }
             
 
@@ -295,6 +317,33 @@ const GL = () => {
                       </section>
                   }
                 </section> 
+
+              ||
+
+                histoLicit && 
+                  <section className={style.body__show__cards}> 
+                    {
+                      existShowSl ? 
+                      existShowSl.map((item) => (
+                        <CardSolicitShow 
+                        key={item._id+item.nome}
+                        _id={item._id}
+                        rt={item.rt}
+                        horario={item.horario} 
+                        nome={item.nome} 
+                        quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
+                        unidadeMedida={item.unidadeMedida} merendeira={item.merendeira.name}
+                        idEscola={item.merendeira.fkEscola}
+                        entregue={item.entregue}
+                        totalProduto={item.produto.quantidadeProduto}
+                        />                      
+                      ))
+                      :
+                      <section className={style.body__nobody__list}>
+                        <h3>Ainda não tem nenhuma solicitação de produto</h3>
+                      </section>  
+                    }
+                  </section>  
 
               ||
 

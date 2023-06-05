@@ -8,12 +8,10 @@ import {ReactComponent as SVGAround} from  '../../assets/IconAround.svg'
 import {ReactComponent as SVGBox} from  '../../assets/IconBox.svg'
 import {ReactComponent as SVGEstatistica} from  '../../assets/iconEstatisticas.svg'
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
-import {ReactComponent as SVGIconeOptionMobile} from  '../../assets/undraw_mobile_feed_re_72ta.svg'
 import Card from '../../components/Card/Card'
 import Modal from '../../components/Modal/Modal'
 import CardSolicit from '../../components/CardSolicitSchool/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
-
 
 const RT = () => {
   document.title = 'Merenda Escolar | Nutricionista'
@@ -76,6 +74,7 @@ const RT = () => {
   const [dataSearch, setDataSearch] = React.useState([])
   const [escTrue, setEscTrue] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
+  const [existShowSl, setExistShowSl] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
     const lowerCase = search.toLocaleLowerCase()
@@ -124,8 +123,6 @@ const RT = () => {
       setEscTrue(solicitados)
     }
   }
-
-  const [existShowSl, setExistShowSl] = React.useState(false)
 
   const handleClickhistoLicit = () => {
     setCadPr('')

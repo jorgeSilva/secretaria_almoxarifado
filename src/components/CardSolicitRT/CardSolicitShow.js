@@ -144,7 +144,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
               required
             />
 
-            <label htmlFor={String(rt)}>Solicitado para Gerente de Logistica</label>
+            <label htmlFor={String(rt)}>Solicitado para Nutricionista</label>
           </div>
 
         </div>
