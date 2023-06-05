@@ -1,5 +1,6 @@
 import React from "react";
 import api from "../services/api";
+import { getDate, getMinutes, getMonth } from "date-fns";
 
 const SolictContext = React.createContext()
 
@@ -47,7 +48,8 @@ function SolicitProvider({children}){
       return alert('Precisa ser informado a unidade de medida.')
     }
 
-    let date = new Date()
+    let hora = new Date()
+
     let ProdutoId = 0
 
     if(produtos){
@@ -66,12 +68,11 @@ function SolicitProvider({children}){
       unidadeMedida: unidade,
       merendeira: url,
       produto: ProdutoId,
-      horario: `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}T${date.getHours()}:${date.getMinutes()}`
+      horario:  `${String(hora.getDate() < 10 ? String('0'+hora.getDate()): getDate())}/${String(hora.getMonth() < 10 ? String('0'+hora.getMonth()): getMonth())}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes() < 10 ? String('0'+hora.getMinutes()): hora.getMinutes())}`
     }).then(() => {
       alert('Solicitação enviada com sucesso.')
       window.location.reload()
-    }).catch(error => setError(error.response.data.msgError))
-            
+    }).catch(error => setError(error.response.data.msgError))         
   }
 
   React.useEffect(() => {
