@@ -432,7 +432,7 @@ const RT = () => {
                       ))
                       :
                       <section className={style.body__nobody__list}>
-                        <h3>Ainda não tem nenhuma solicitação de produto</h3>
+                        <h3>Nenhum produto solicitado</h3>
                       </section>  
                     }
                   </section>  
