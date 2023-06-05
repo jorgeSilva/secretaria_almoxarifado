@@ -368,6 +368,7 @@ const RT = () => {
                       produtosTrue ?
                         produtosTrue.map((item) => (
                           <Card 
+                          _id={item._id}
                           key={item._id+item.nome}
                           nome={item.nome}
                           quantidadeProduto={item.quantidadeProduto}

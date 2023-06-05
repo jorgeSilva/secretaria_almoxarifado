@@ -231,3 +231,28 @@
     justify-content: center;
   }
 }
+
+
+.body__modal__post{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9;
+}
+
+@media (max-width: 1180px) {
+  .body__modal__post{
+    height: 100%;
+  }  
+}
+
+.body__modal__container{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

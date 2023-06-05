@@ -1,14 +1,17 @@
 import React from 'react'
 import style from './style.module.css'
+import ModalUpdate from '../../components/ModalUpdate/Modal'
 
-const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
+const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
+  /* ---------------------- Rotas da API --------------------------- */
+
+
+  /* ---------------------- Estados para o front end ------------------- */
 
   const [input, setInput] = React.useState(null)
   const [update, setUpdate] = React.useState(false)
-  
-  const handleInput = (e) => {
-    setInput(e.target.value)
-  }
+  const [id, setID] = React.useState(false)
+  const [modal, setModal] = React.useState(false)
 
   const inputRef = React.useRef(null)
   let uppercase
@@ -19,17 +22,36 @@ const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
 
   const handleClick = () => {
     setUpdate(!update)
+    setID(_id)
   }
 
-  const handleAtt = () => {
+    const handleInput = (e) => {
+    setInput(e.target.value)
+  }
+
+  const handleModal = () => {
+    setModal(!modal)
+  }
+
+  const handleExcluir = () => {
   /*   transformTrue()
     alert('Pedido solicitado para Gerente de Logistica.')
     window.location.reload() */
   }
 
-
   return (
     <>
+      {
+        modal 
+          && 
+        <div className={style.body__modal__post} >
+          <div className={style.body__modal__container}>
+            <ModalUpdate modal={modal} setModal={setModal} _id={id}/>
+          </div>
+        </div>
+      }
+
+
       <button onClick={handleClick} className={style.card__container}>
         <div className={style.card__content}>
           <div className={`${style.card__textbox} ${style.card__password}`}>
@@ -71,11 +93,11 @@ const Card = ({nome, quantidadeProduto, unidadeMedida}) => {
           { 
             update &&
             <div className={style.card__button__updateRT}>
-              <button onClick={handleAtt} className={style.card__button__editar}>
+              <button onClick={handleModal} className={style.card__button__editar}>
                 Editar
               </button>
               
-              <button onClick={handleAtt} className={style.card__button__excluir}>
+              <button onClick={handleExcluir} className={style.card__button__excluir}>
                 Excluir
               </button>
             </div>
