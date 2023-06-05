@@ -1,0 +1,32 @@
+:root{
+  --c0:  #fff;
+  --c1:  #f7f7f7;
+  --c2:  #ededed;
+  --c3:  #dedede;
+  --c4:  #ccc;
+  --c5:  #b3b3b3;
+  --c6:  #9c9c9c;
+  --c7:  #707070;
+  --c8:  #595959;
+  --c9:  #404040;
+  --c10: #2e2e2e;
+  --c11: #212121;
+  --c12: #131313;
+  --c13: #000;
+  --p0: #ECF39E;
+  --p1: #709176;
+  --p2: #809B7C;
+  --p3: #8FA482;
+  --p4: #31572C;
+  --p5: #132A13;
+  --outline: #A7B417;
+  --colorButton: #25C70D;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}

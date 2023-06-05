@@ -1,0 +1,193 @@
+.card__container{
+  background-color: var(--p1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  transition: .1s;
+}
+
+.card__container:hover{
+  scale: 1.005;
+  outline: none;
+  box-shadow: 0 0 0 3px #fea, 0 0 0 4px #fb1;
+}
+
+.card__content{
+  width: 95%;
+  height: 270px;
+  display: flex;
+  flex-direction: column;
+  padding: 1px;
+}
+
+.card__container:nth-child(6n){
+  width: 700px;
+  height: 270px;
+  grid-column: 2;
+}
+
+@media (max-width: 1670px) {
+  .card__content{
+    width: 95%;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card__container:nth-child(6n){
+    width: 550px;
+    height: 270px;
+    grid-column: 2;
+  }
+}
+
+.card__textbox{
+  position: relative;
+  border: 0;
+  width: 100%;
+  font-family: 'Red Hat Display';
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 2.5rem;
+}
+
+.card__textbox input{
+  color: var(--c0);
+  height: 60px;
+  background-color: var(--p1);
+  border: none;
+  border-bottom: 1px solid var(--c0);
+  width: 94%;
+  padding-left: 5%;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.card__textbox label {
+  position: absolute;
+  top: 50%;
+  left: 42px;
+  translate: 0 -50%;
+  color: var(--c2);
+  pointer-events: none;
+  transition: .4s;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: 'Red Hat Display';
+  display: block;
+}
+
+@media (max-width: 366px) {
+  .card__textbox label {
+   width: 100%;
+  } 
+}
+
+@media (max-width: 1630px) {
+  .card__content{
+    width: 100%;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card__container:nth-child(6n){
+    width: 550px;
+    height: 270px;
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 1550px) {
+  .card__content{
+    width: 100%;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card__container:nth-child(6n){
+    width: 500px;
+    height: 270px;
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 995px) {
+  .card__content{
+    width: 100%;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card__container:nth-child(6n){
+    width: initial;
+    height: 270px;
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .card__container{
+    grid-column: 1 / -1;
+  }
+
+  .card__content{
+    width: 100%;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card__container:nth-child(6n){
+    width: initial;
+    grid-column: 1 / -1;
+  }
+}
+
+
+.card__textbox input:focus{
+  outline: none;
+}
+
+.card__password button{
+  position: absolute;
+  top: 55%;
+  right: 8px;
+  place-items: center;
+  padding: 0;
+  translate: 0 -55%;
+  border: none;
+  display: none;
+}
+
+
+.card__password :is(input:focus, input:valid) ~ label{
+  translate: -40px -50px;
+  scale: .875;
+}
+
+.card__password input:focus ~ label{
+  color: var(--c0);
+}
+
+.card__password :is(input:valid, input:focus){
+  border-color: var(--c0);
+}
+
+.card__password :is(input:valid, input:valid) ~ .email__icon{
+  color: var(--c0);
+}
+
+/* @media (max-width: 721px) {
+  .card__container{
+    background-color: #fb1;
+    justify-self: center;
+    width: 80%;
+  }
+} */
