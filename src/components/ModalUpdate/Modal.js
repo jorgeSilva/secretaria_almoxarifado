@@ -3,8 +3,10 @@ import style from './style.module.css'
 import api from '../../services/api'
 import { ReactComponent as SVGClose } from '../../assets/iconClose.svg'
 
-const Modal = ({modal, setModal, _id}) => {
+const Modal = ({modal, setModal, name, _id, quantidadeProduto, unidadeMedida}) => {
 /* ---------------------- Rotas da API --------------------------- */
+
+console.log(name, quantidadeProduto, unidadeMedida);
 
 async function updateProduto(){
   await api.put(`/produto/${_id}`, {
@@ -24,9 +26,9 @@ async function updateProduto(){
     updateProduto()
   }
 
-  const [nome, setNome] = React.useState('')
-  const [QTDP, setQTDP] = React.useState()
-  const [unidade, setUnidade] = React.useState('')
+  const [nome, setNome] = React.useState(name)
+  const [QTDP, setQTDP] = React.useState(quantidadeProduto)
+  const [unidade, setUnidade] = React.useState(unidadeMedida)
   const [error, setError] = React.useState(false)
 
   const handleNome = (e) => {

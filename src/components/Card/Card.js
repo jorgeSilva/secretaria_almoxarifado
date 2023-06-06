@@ -53,7 +53,13 @@ const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
           && 
         <div className={style.body__modal__post} >
           <div className={style.body__modal__container}>
-            <ModalUpdate modal={modal} setModal={setModal} _id={id}/>
+            <ModalUpdate 
+              modal={modal}
+              setModal={setModal} 
+              _id={id}
+              name={nome}
+              quantidadeProduto={quantidadeProduto}
+              unidadeMedida={unidadeMedida}/>
           </div>
         </div>
       }
