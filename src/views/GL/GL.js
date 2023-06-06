@@ -276,6 +276,7 @@ const GL = () => {
                       produtosTrue ?
                         produtosTrue.map((item) => (
                           <Card 
+                          _id={item._id}
                           nome={item.nome} key={item._id}
                           quantidadeProduto={item.quantidadeProduto}
                           unidadeMedida={item.unidadeMedida}
