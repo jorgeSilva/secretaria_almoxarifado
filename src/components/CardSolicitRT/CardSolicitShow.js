@@ -81,7 +81,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
               required
             />
 
-            <label htmlFor={nome}>Total de Produto no almoxarifado</label>
+            <label htmlFor={nome}>Produtos no almoxarifado</label>
           </div>
 
           <div className={`${style.card__textbox} ${style.card__password}`}>
@@ -126,19 +126,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
           <div className={`${style.card__textbox} ${style.card__password}`}>
             <input
               ref={inputRef}
-              value={solicitado == true ? 'Solicitação aprovada pela GL': 'Não aprovada pela GL'}
-              onChange={handleInput}
-              id={nome}
-              required
-            />
-
-            <label htmlFor={String(solicitado)}>Solicitado para Gerente de Logistica</label>
-          </div>
-
-          <div className={`${style.card__textbox} ${style.card__password}`}>
-            <input
-              ref={inputRef}
-              value={rt == true ? 'Solicitação aprovada pela RT': 'Não aprovada pela RT'}
+              value={rt == true ? 'Aprovada pela RT': 'Não aprovada pela RT'}
               onChange={handleInput}
               id={nome}
               required
@@ -147,6 +135,17 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
             <label htmlFor={String(rt)}>Solicitado para Nutricionista</label>
           </div>
 
+          <div className={`${style.card__textbox} ${style.card__password}`}>
+            <input
+              ref={inputRef}
+              value={solicitado == true ? 'Aprovada pela GL': 'Não aprovada pela GL'}
+              onChange={handleInput}
+              id={nome}
+              required
+            />
+
+            <label htmlFor={String(solicitado)}>Gerente de Logistica</label>
+          </div>
         </div>
       </section>
     </>
