@@ -1,10 +1,13 @@
 import React from 'react'
 import style from './style.module.css'
 import ModalUpdate from '../../components/ModalUpdate/Modal'
+import api from '../../services/api'
 
 const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
   /* ---------------------- Rotas da API --------------------------- */
-
+  async function destroy(){
+    await api.delete(`produtos/deletar/${_id}`)
+  }
 
   /* ---------------------- Estados para o front end ------------------- */
 
@@ -34,9 +37,13 @@ const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
   }
 
   const handleExcluir = () => {
-  /*   transformTrue()
-    alert('Pedido solicitado para Gerente de Logistica.')
-    window.location.reload() */
+    const res = window.confirm('Deseja realmente remover este produto?')
+
+    if(res == true){
+      destroy()
+      alert('Produto removido com sucesso.')
+      window.location.reload()
+    }
   }
 
   return (
