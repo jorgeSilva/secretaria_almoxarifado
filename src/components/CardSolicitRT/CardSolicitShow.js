@@ -33,7 +33,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   }, [])
 
   return (
-    <> 
+    <>
       <section className={style.card__container}>
         <div className={style.card__content}>
         <div className={`${style.card__textbox} ${style.card__password}`}>

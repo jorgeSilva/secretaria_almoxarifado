@@ -324,7 +324,7 @@ const GL = () => {
                 histoLicit && 
                   <section className={style.body__show__cards}> 
                     {
-                      existShowSl ? 
+                      existShowSl != false ? 
                       existShowSl.map((item) => (
                         <CardSolicitShow 
                         key={item._id+item.nome}
@@ -332,11 +332,13 @@ const GL = () => {
                         rt={item.rt}
                         horario={item.horario} 
                         nome={item.nome} 
-                        quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
-                        unidadeMedida={item.unidadeMedida} merendeira={item.merendeira.name}
+                        quantidadeProduto={item.quantidadeProduto} 
+                        solicitado={item.solicitado} 
+                        unidadeMedida={item.unidadeMedida} 
+                        merendeira={item.merendeira.name}
                         idEscola={item.merendeira.fkEscola}
                         entregue={item.entregue}
-                        totalProduto={item.produto.quantidadeProduto}
+                        totalProduto={item.produto != null ? item.produto.quantidadeProduto : 'Não mais existente no almoxarifado'}
                         />                      
                       ))
                       :
