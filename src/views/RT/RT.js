@@ -33,15 +33,14 @@ const RT = () => {
       if(data){
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
+        
+        await api.get(`/secretaria/produtos/${data.secretaria}`)
+        .then(({data}) => setProdutos(data))
+          .catch(error => console.log(error))
       }
     }catch(error){
-      console.log(error);
+      setError(error);
     }
-  }
-
-  async function getProdutos(){
-    await api.get(`/produtos`)
-      .then(({data}) => setProdutos(data)).catch(error => console.log(error))
   }
 
   async function getSolicitados(){
@@ -98,7 +97,7 @@ const RT = () => {
     setHistoLicit('')
   }
 
-  const handleClickProdLict= () => {
+  const handleClickProdLict =  () => {
     setCadPr('')
     setProdLict('active')
     setProdLictEsc('')
@@ -146,7 +145,6 @@ const RT = () => {
       window.location.href = '/'
     }
     getUser()
-    getProdutos()
     getSolicitados()
     getShowSolicitados()
   }, [])
