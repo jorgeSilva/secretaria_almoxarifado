@@ -41,16 +41,14 @@ const RT = () => {
         await api.get(`/rtFalse/${data.secretaria}`)
         .then(({data}) => setSolicitados(data))
           .catch(e => console.log(e))
+        
+          await api.get(`/rt/secretaria/${data.secretaria}`)
+          .then(({data}) => setDataShowSolicitados(data))
+            .catch(e => console.log(e))
       }
     }catch(error){
       setError(error);
     }
-  }
-
-  async function getShowSolicitados(){
-    await api.get(`/rt`)
-      .then(({data}) => setDataShowSolicitados(data))
-        .catch(e => console.log(e))
   }
 
 /* -----------------ESTADOS FRONT-END ------------------------  */
@@ -139,7 +137,6 @@ const RT = () => {
       window.location.href = '/'
     }
     getUser()
-    getShowSolicitados()
   }, [])
 
   return (
