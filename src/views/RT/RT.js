@@ -36,20 +36,14 @@ const RT = () => {
         
         await api.get(`/secretaria/produtos/${data.secretaria}`)
         .then(({data}) => setProdutos(data))
-          .catch(error => console.log(error))
+          .catch(e => console.log(e))
+
+        await api.get(`/rtFalse/${data.secretaria}`)
+        .then(({data}) => setSolicitados(data))
+          .catch(e => console.log(e))
       }
     }catch(error){
       setError(error);
-    }
-  }
-
-  async function getSolicitados(){
-    const {data} = await api.get('/rtFalse')
-
-    try{
-      setSolicitados(data)
-    }catch(error){
-      setError(error)
     }
   }
 
@@ -145,7 +139,6 @@ const RT = () => {
       window.location.href = '/'
     }
     getUser()
-    getSolicitados()
     getShowSolicitados()
   }, [])
 
