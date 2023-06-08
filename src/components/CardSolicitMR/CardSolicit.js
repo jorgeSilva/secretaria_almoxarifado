@@ -18,28 +18,31 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
       .then(({data}) => setDataSchool(data))
         .catch(error => console.log(error))
   }
+
+
+  async function getProdutos(){
+    await api.get('/produtos')
+      .then(({data}) => setProdutos(data))
+  }
+
   async function attTabelaProduto(){
     let ProdutoId = 0
     let quantidadeProdutoCalculado = 0
 
     if(produtos){
+      
       for(let i = 0; i < produtos.length; i++){
-        if(await(produtos && nome == produtos[i].nome)){
+       if(await(produtos && nome == produtos[i].nome)){
           ProdutoId = produtos[i]._id
           quantidadeProdutoCalculado = produtos[i].quantidadeProduto - quantidadeProduto
         }        
-      }
+      } 
     }
 
     await api.put(`/mr/update/${ProdutoId}`, {
       quantidadeProduto: quantidadeProdutoCalculado
-    }).then()
+    }).then(({data}) => console.log(data.quantidadeProduto))
         .catch(e => console.log(e))
-  }
-
-  async function getProdutos(){
-    await api.get('/produtos')
-      .then(({data}) => setProdutos(data))
   }
 
   async function transformTrue(){
@@ -56,7 +59,8 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
     setUpdate(!update)
   }
 
-  const handleAtt = () => {
+  const handleAtt = (e) => {
+    e.preventDefault()
     attTabelaProduto()
     transformTrue()
     alert('Almoxarifado atualizado com sucesso.')
