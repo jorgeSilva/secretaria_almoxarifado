@@ -11,9 +11,11 @@ function SolicitProvider({children}){
   const [url, setUrl] = React.useState('')
   const [error, setError] = React.useState(false)
   const [produtos, setProdutos] = React.useState(false)
+  const [user, setUser] = React.useState(false)
 
   const handleNome = (e) => {
     setNome(e.target.value)
+    handleUser()
   }
 
   const handleQTDP = (e) => {
@@ -31,6 +33,12 @@ function SolicitProvider({children}){
   const handleSubmit = (e) => {
     e.preventDefault()
     save()
+  }
+
+  async function handleUser(){
+    await api.get(`/usuario/${url}`)
+      .then(({data}) => setUser(data))
+        .catch(e => setError(e.response.data.error))
   }
 
   async function getProdutos(){
@@ -60,19 +68,20 @@ function SolicitProvider({children}){
       }
     }
 
-    console.log(ProdutoId);
-    
+    console.log('aaaa');
+
     await api.post('/mr', {
       nome: nome,
       quantidadeProduto: QTDP,
       unidadeMedida: unidade,
       merendeira: url,
       produto: ProdutoId,
+      secretaria: user.secretaria,
       horario:  `${String(hora.getDate() < 10 ? String('0'+hora.getDate()): getDate())}/${String(hora.getMonth() < 10 ? String('0'+hora.getMonth()): getMonth())}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes() < 10 ? String('0'+hora.getMinutes()): hora.getMinutes())}`
     }).then(() => {
       alert('Solicitação enviada com sucesso.')
       window.location.reload()
-    }).catch(error => setError(error.response.data.msgError))         
+    }).catch(error => setError(error.response.data.error))         
   }
 
   React.useEffect(() => {
