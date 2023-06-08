@@ -30,15 +30,17 @@ const GL = () => {
       if(data){
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
+
+        console.log(data.secretaria);
+
+        await api.get(`/secretaria/produtos/${data.secretaria}`)
+        .then(({data}) => setProdutos(data))
+          .catch(e => console.log(e))
+
       }
     }catch(error){
       console.log(error);
     }
-  }
-
-  async function getProdutos(){
-    await api.get(`/produtos`)
-      .then(({data}) => setProdutos(data)).catch(error => console.log(error))
   }
 
   async function getSolicitados(){
@@ -120,7 +122,6 @@ const GL = () => {
       window.location.href = '/'
     }
     getUser()
-    getProdutos()
     getSolicitados()
     getShowSolicitados()
   }, [])
