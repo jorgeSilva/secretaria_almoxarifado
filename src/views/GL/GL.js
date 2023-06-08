@@ -31,28 +31,21 @@ const GL = () => {
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
 
-        console.log(data.secretaria);
-
         await api.get(`/secretaria/produtos/${data.secretaria}`)
         .then(({data}) => setProdutos(data))
           .catch(e => console.log(e))
 
+        await api.get(`/gl/secretaria/${data.secretaria}`)
+        .then(({data}) => setSolicitados(data))
+          .catch(error => console.log(error))
+
+        await api.get(`/rt/secretaria/${data.secretaria}`)
+        .then(({data}) => setDataShowSolicitados(data))
+          .catch(e => console.log(e))
       }
     }catch(error){
       console.log(error);
     }
-  }
-
-  async function getSolicitados(){
-    await api.get('/gl')
-      .then(({data}) => setSolicitados(data))
-        .catch(error => console.log(error))
-  }
-
-  async function getShowSolicitados(){
-    await api.get(`/rt`)
-      .then(({data}) => setDataShowSolicitados(data))
-        .catch(e => console.log(e))
   }
 
 /* -----------------ESTADOS FRONT-END ------------------------  */
@@ -122,8 +115,6 @@ const GL = () => {
       window.location.href = '/'
     }
     getUser()
-    getSolicitados()
-    getShowSolicitados()
   }, [])
 
   React.useEffect(() => {
