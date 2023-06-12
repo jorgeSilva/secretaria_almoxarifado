@@ -165,4 +165,19 @@
   background-color: var(--colorButton);
   color: var(--c0);
   width: 100%;
+  margin-bottom: 1rem;
+}
+
+.card__button__updateRT button:last-child{
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-family: 'Red Hat Display';
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  transition: .3s;
+  background-color: var(--c4);
+  color: var(--c8);
+  width: 100%;
 }

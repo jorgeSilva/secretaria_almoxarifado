@@ -25,8 +25,17 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   const [update, setUpdate] = React.useState(false)
 
   async function transformTrue(){
-    await api.put(`/gl/${_id}/${update}`)
+    await api.put(`/gl/${_id}/true`)
       .then(r => console.log(r))
+        .catch(e => console.log(e))
+  }
+
+  async function transformFalse(){
+    await api.put(`/rt/${_id}/false`)
+      .then(() => {
+        alert('Pedido retornado à nutricionista.')
+        window.location.reload()
+      })
         .catch(e => console.log(e))
   }
 
@@ -123,6 +132,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
           update &&
           <div className={style.card__button__updateRT}>
             <button onClick={handleAtt}>Enviar para escola</button>
+            <button onClick={transformFalse}>Devolver para Nutricionista</button>
           </div>}
         </div>
       </button>
