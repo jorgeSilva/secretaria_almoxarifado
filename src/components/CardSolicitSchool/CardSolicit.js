@@ -25,8 +25,20 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   const [update, setUpdate] = React.useState(false)
 
   async function transformTrue(){
-    await api.put(`/rt/${_id}/${update}`)
+    await api.put(`/rt/${_id}/true`)
       .then(r => console.log(r))
+        .catch(e => console.log(e))
+  }
+
+  async function transformFalse(){
+    await api.put(`/rt/${_id}/false`)
+      .then(() => {
+        api.delete(`/produto/solicitado/${_id}`)
+          .then(() => {
+            alert('Pedido excluido com sucesso.')
+            window.location.reload()
+          })
+      })
         .catch(e => console.log(e))
   }
 
@@ -123,6 +135,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
           update &&
           <div className={style.card__button__updateRT}>
             <button onClick={handleAtt}>Acionar Gerente de Logistica</button>
+            <button onClick={transformFalse}>Excluir Solicitação</button>
           </div>}
         </div>
       </button>
