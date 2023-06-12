@@ -226,7 +226,7 @@ const MR = () => {
                     {
                       active &&  
                         <section className={style.body__card__solicit__active}>
-                          <CardModal />
+                          <CardModal data={data}/>
                         </section>  
                     }
 
@@ -270,8 +270,10 @@ const MR = () => {
                         horario={item.horario} 
                         nome={item.nome} 
                         quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
-                        unidadeMedida={item.unidadeMedida} merendeira={item.merendeira.name}
+                        unidadeMedida={item.unidadeMedida} 
+                        merendeira={item.merendeira.name}
                         idEscola={item.merendeira.fkEscola}
+                        secretaria={item.secretaria._id}
                         />
                       )) 
                       :  

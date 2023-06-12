@@ -10,13 +10,23 @@ function SolicitProvider({children}){
   const [unidade, setUnidade] = React.useState('')
   const [url, setUrl] = React.useState('')
   const [error, setError] = React.useState(false)
-  const [produtos, setProdutos] = React.useState(false)
   const [user, setUser] = React.useState(false)
+  const [produto, setProduto] = React.useState(false)
+
+  async function getProdutos(){
+    await api.get(`/produtos`)
+        .then(({data}) => setProduto(data))
+          .catch(e => console.log(e))
+  }
 
   const handleNome = (e) => {
     setNome(e.target.value)
-    handleUser()
+   /*  if(produto){
+      produto.forEach()
+    } */
   }
+
+
 
   const handleQTDP = (e) => {
     setQTDP(e.target.value)
@@ -26,6 +36,7 @@ function SolicitProvider({children}){
     setUnidade(e.target.value)
   }
 
+
   const handleUrl = (e) => {
     setUrl(String(document.URL.split("/").slice(-1)))
   }
@@ -33,18 +44,6 @@ function SolicitProvider({children}){
   const handleSubmit = (e) => {
     e.preventDefault()
     save()
-  }
-
-  async function handleUser(){
-    await api.get(`/usuario/${url}`)
-      .then(({data}) => setUser(data))
-        .catch(e => setError(e.response.data.error))
-  }
-
-  async function getProdutos(){
-    await api.get('/produtos')
-      .then(({data}) => setProdutos(data))
-        .catch(error => setError(error))
   }
 
   async function save() {
@@ -56,32 +55,43 @@ function SolicitProvider({children}){
       return alert('Precisa ser informado a unidade de medida.')
     }
 
-    let hora = new Date()
+    const {data} = await api.get(`/usuario/${url}`)
 
-    let ProdutoId = 0
+    try{
+      setUser(data)
 
-    if(produtos){
-      for(let i = 0; i < produtos.length; i++){
-        if(await(produtos && nome == produtos[i].nome)){
-          ProdutoId = produtos[i]._id
-        }
+      if(data){
+        await api.get(`/secretaria/produtos/${data.secretaria}`)
+          .then(({data}) => {
+            if(data){
+              for(let i = 0; i < data.length; i++){
+                if(data && nome == data[i].nome){
+                  let hora = new Date()
+
+                  api.post('/mr', {
+                    nome: nome,
+                    quantidadeProduto: QTDP,
+                    unidadeMedida: unidade,
+                    merendeira: url,
+                    produto: data[i]._id,
+                    secretaria: data[i].secretaria,
+                    horario:  `${String(hora.getDate())}/${String(hora.getMonth())}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
+                  }).then(() => {
+                    alert('Solicitação enviada com sucesso.')
+                    window.location.reload()
+                  })
+                  .catch(error => setError(error.response.data.error))
+                }else{
+                  setError(`Não foi encontrado produto: ${nome}`)
+                }
+              }
+            }
+          }
+        )
       }
+    }catch(e){
+      setError(e.response.data.error)
     }
-
-    console.log('aaaa');
-
-    await api.post('/mr', {
-      nome: nome,
-      quantidadeProduto: QTDP,
-      unidadeMedida: unidade,
-      merendeira: url,
-      produto: ProdutoId,
-      secretaria: user.secretaria,
-      horario:  `${String(hora.getDate() < 10 ? String('0'+hora.getDate()): getDate())}/${String(hora.getMonth() < 10 ? String('0'+hora.getMonth()): getMonth())}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes() < 10 ? String('0'+hora.getMinutes()): hora.getMinutes())}`
-    }).then(() => {
-      alert('Solicitação enviada com sucesso.')
-      window.location.reload()
-    }).catch(error => setError(error.response.data.error))         
   }
 
   React.useEffect(() => {
@@ -90,7 +100,19 @@ function SolicitProvider({children}){
   }, [])
 
   return(
-    <SolictContext.Provider value={{nome, QTDP, unidade, error, handleNome, handleQTDP, handleUnidade, handleUrl, handleSubmit}} >
+    <SolictContext.Provider value={
+      {
+        nome,
+        QTDP, 
+        unidade, 
+        error, 
+        handleNome, 
+        handleQTDP, 
+        handleUnidade, 
+        handleUrl, 
+        handleSubmit
+      }
+    }>
       {children}
     </SolictContext.Provider>
   )

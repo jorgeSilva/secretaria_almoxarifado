@@ -179,3 +179,16 @@
   border-radius: 5px;
   padding: 1rem;
 }
+
+.card__modal__list__content{
+  background-color: var(--c3);
+  height: 200px;
+  width: 99.5%;
+  position: absolute;
+  z-index: 10;
+}
+
+.card__modal__list{
+  margin: 0;
+  padding: 0;
+}

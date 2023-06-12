@@ -2,7 +2,7 @@ import React from 'react'
 import style from './style.module.css'
 import api from '../../services/api'
 
-const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedida, merendeira, idEscola, _id, rt, entregue}) => {
+const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedida, merendeira, idEscola, _id, rt, entregue, secretaria}) => {
   const [produtos, setProdutos] = React.useState(false)
   const inputRef = React.useRef(null)
   const [input, setInput] = React.useState(null)
@@ -21,8 +21,9 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
 
 
   async function getProdutos(){
-    await api.get('/produtos')
-      .then(({data}) => setProdutos(data))
+    await api.get(`/secretaria/produtos/${secretaria}`)
+        .then(({data}) => setProdutos(data))
+          .catch(e => console.log(e))
   }
 
   async function attTabelaProduto(){
@@ -41,7 +42,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
 
     await api.put(`/mr/update/${ProdutoId}`, {
       quantidadeProduto: quantidadeProdutoCalculado
-    }).then(({data}) => console.log(data.quantidadeProduto))
+    }).then(({data}) => console.log(data))
         .catch(e => console.log(e))
   }
 
@@ -50,7 +51,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
       .then(([data]) => console.log(data))
         .catch(error => console.log(error))
   }
-  
+
   const handleInput = (e) => {
     setInput(e.target.value)
   }
@@ -69,7 +70,9 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
 
   React.useEffect(() => {
     handleSchool()
-    getProdutos()
+    if(secretaria){
+      getProdutos()
+    }
   }, [])
 
   return (
