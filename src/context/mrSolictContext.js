@@ -75,7 +75,7 @@ function SolicitProvider({children}){
                     merendeira: url,
                     produto: data[i]._id,
                     secretaria: data[i].secretaria,
-                    horario:  `${String(hora.getDate())}/${String(hora.getMonth())}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
+                    horario:  `${String(hora.getDate())}/${String(hora.getMonth()+1)}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
                   }).then(() => {
                     alert('Solicitação enviada com sucesso.')
                     window.location.reload()
