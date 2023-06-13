@@ -1,6 +1,7 @@
 import React from 'react'
 import style from './style.module.css'
 import api from '../../services/api'
+import Modal from '../ModalUpdateSolicit/Modal'
 
 const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedida, merendeira, idEscola, _id, rt}) => {
   const [dataSchool, setDataSchool] = React.useState(false)
@@ -23,6 +24,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   const hour =  horario.split('T').at(-1)
 
   const [update, setUpdate] = React.useState(false)
+  const [modal, setModal] = React.useState(false)
 
   async function transformTrue(){
     await api.put(`/rt/${_id}/true`)
@@ -46,6 +48,10 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
     setUpdate(!update)
   }
 
+  const handleModal = () => {
+    setModal(!modal)
+  }
+
   const handleAtt = () => {
     transformTrue()
     alert('Pedido solicitado para Gerente de Logistica.')
@@ -57,7 +63,23 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   }, [])
 
   return (
-    <> 
+    <>
+      {
+        modal 
+          && 
+        <div className={style.body__modal__post} >
+          <div className={style.body__modal__container}>
+            <Modal 
+              modal={modal}
+              setModal={setModal} 
+              _id={_id}
+              name={nome}
+              quantidadeProduto={quantidadeProduto}
+              unidadeMedida={unidadeMedida}/>
+          </div>
+        </div>
+      }
+
       <button onClick={handleClick} className={style.card__container}>
         <div className={style.card__content}>
         <div className={`${style.card__textbox} ${style.card__password}`}>
@@ -135,6 +157,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
           update &&
           <div className={style.card__button__updateRT}>
             <button onClick={handleAtt}>Acionar Gerente de Logistica</button>
+            <button onClick={handleModal}>Editar Solicitação</button>
             <button onClick={transformFalse}>Excluir Solicitação</button>
           </div>}
         </div>
