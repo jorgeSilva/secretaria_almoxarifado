@@ -171,14 +171,14 @@ const GL = () => {
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                    Produtos da licitação
+                    Produtos no Almoxarifado
                   </button> 
                 </div>
                   : 
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg}/>
                   <button className={style.body__options__button} onClick={handleClickProdLict}>
-                    Produtos da licitação
+                    Produtos no Almoxarifado
                   </button>
                 </div>
               }
@@ -223,8 +223,8 @@ const GL = () => {
               {
                 prodLict && 
                 <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Produtos da Licitação</h2>
-                  <p className={style.body__subtitle}>Role a página para ver os produtos da licitação, ou pesquise no campo de busca acima..</p>
+                  <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
+                  <p className={style.body__subtitle}>Role a página para ver os produtos no almoxarifado, ou pesquise no campo de busca acima.</p>
                 </div>
                 || 
                 prodLictEsc && 

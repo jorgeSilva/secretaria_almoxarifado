@@ -203,14 +203,14 @@ const RT = () => {
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                    Produtos da licitação
+                    Produtos no Almoxarifado
                   </button> 
                 </div>
                   : 
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg}/>
                   <button className={style.body__options__button} onClick={handleClickProdLict}>
-                    Produtos da licitação
+                    Produtos no Almoxarifado
                   </button>
                 </div>
               }
@@ -261,9 +261,9 @@ const RT = () => {
                 ||
                 prodLict && 
                 <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Produtos da Licitação</h2>
+                  <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
                   <p className={style.body__subtitle}>
-                    Se deseja editar ou excluir um produto da licitação, aperte no card e selecione "Editar" ou "Exlcuir".
+                    Se deseja editar ou excluir um produto do almoxarifado, aperte no card e selecione "Editar" ou "Exlcuir".
                   </p>
                 </div>
                 || 
