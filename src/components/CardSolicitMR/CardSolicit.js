@@ -40,15 +40,32 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
       } 
     }
 
-    await api.put(`/mr/update/${ProdutoId}`, {
-      quantidadeProduto: quantidadeProdutoCalculado
-    }).then(({data}) => console.log(data))
-        .catch(e => console.log(e))
+    if(quantidadeProdutoCalculado <= 0){
+      return alert('Quantidade solicitada maior que a quantidade existente no almoxarifado.')
+    }else{
+      await api.put(`/mr/update/${ProdutoId}`, {
+        quantidadeProduto: quantidadeProdutoCalculado
+      }).then(({data}) => {
+        transformTrue()
+        alert('Almoxarifado atualizado com sucesso.')
+        window.location.reload()
+      })
+          .catch(e => console.log(e))
+    }
   }
 
   async function transformTrue(){
     await api.put(`/mr/${_id}/true`)
-      .then(([data]) => console.log(data))
+      .then((data) => console.log(data))
+        .catch(error => console.log(error))
+  }
+
+  async function transformFalse(){
+    await api.put(`/gl/${_id}/false`)
+      .then(() => {
+        alert('Pedido devolvido a Gerente de Logistica')
+        window.location.reload()
+      })
         .catch(error => console.log(error))
   }
 
@@ -63,9 +80,6 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
   const handleAtt = (e) => {
     e.preventDefault()
     attTabelaProduto()
-    transformTrue()
-    alert('Almoxarifado atualizado com sucesso.')
-    window.location.reload()
   }
 
   React.useEffect(() => {
@@ -157,6 +171,7 @@ const CardSolicit = ({horario, nome, quantidadeProduto, solicitado, unidadeMedid
             update &&
             <div className={style.card__button__updateRT}>
               <button onClick={handleAtt}>Atualizar Almoxarifado</button>
+              <button onClick={transformFalse}>Devolver à Gerente de Logistica</button>
             </div>}
           </div>
         </button>
