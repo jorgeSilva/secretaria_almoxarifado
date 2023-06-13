@@ -10,7 +10,8 @@ import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes
 import Card from '../../components/Card/Card'
 import CardSolicit from '../../components/CardSolicitGL/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
-
+import {ReactComponent as SvgPrancheta} from  '../../assets/Prancheta.svg'
+import ModalGL from '../../components/ModalGL/Modal'
 
 const GL = () => {
   document.title = 'Merenda Escolar | Gerente Logistica'
@@ -51,6 +52,7 @@ const GL = () => {
 /* -----------------ESTADOS FRONT-END ------------------------  */
 
   const [name, setName] = React.useState('')
+  const [cadPr, setCadPr] = React.useState('')
   const [valueCadPr, setValueCadPr] = React.useState('')
   const [prodLict, setProdLict] = React.useState('')
   const [prodLictEsc, setProdLictEsc] = React.useState('')
@@ -61,6 +63,7 @@ const GL = () => {
   const [envioEsc, setEnvioEsc] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
   const [existShowSl, setExistShowSl] = React.useState(false)
+  const [modal, setModal] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
     const lowerCase = search.toLocaleLowerCase()
@@ -74,7 +77,15 @@ const GL = () => {
 
   }, [produtos, search])
 
+  const handleClickCadPr = () => {
+    setCadPr('active')
+    setProdLict('')
+    setProdLictEsc('')
+    setHistoLicit('')
+  }
+
   const handleClickProdLict= () => {
+    setCadPr('')
     setProdLict('active')
     setProdLictEsc('')
     setHistoLicit('')
@@ -92,6 +103,7 @@ const GL = () => {
   }
 
   const handleClickProdLictEsc = () => {
+    setCadPr('')
     setProdLict('')
     setProdLictEsc('active')
     setHistoLicit('')
@@ -104,6 +116,7 @@ const GL = () => {
   }
 
   const handleClickhistoLicit = () => {
+    setCadPr('')
     setProdLict('')
     setProdLictEsc('')
     setHistoLicit('active')
@@ -113,6 +126,10 @@ const GL = () => {
     }else{
       setExistShowSl(dataShowSolicitados)
     }
+  }
+
+  const handleModal = () => {
+    setModal(!modal)
   }
 
   React.useEffect(() => {
@@ -170,9 +187,24 @@ const GL = () => {
               {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
 
               <section className={style.body__options}>
-
               {
-                prodLict && !prodLictEsc && !histoLicit? 
+                cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                <div className={style.body__options__content}>
+                  <SvgPrancheta className={style.body__options__svg_active}/>
+                  <button className={style.body__options__button_active} onClick={handleClickCadPr}>
+                    Cadastrar produtos no almoxarifado
+                  </button> 
+                </div>
+                  : 
+                <div className={style.body__options__content}>
+                  <SvgPrancheta className={style.body__options__svg}/>
+                  <button className={style.body__options__button} onClick={handleClickCadPr}>
+                    Cadastrar produtos no almoxarifado
+                  </button>
+                </div>
+              }
+              {
+                prodLict &&  !cadPr && !prodLictEsc && !histoLicit? 
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLict}>
@@ -189,7 +221,7 @@ const GL = () => {
               }
 
               {
-                prodLictEsc && !prodLict && !histoLicit ? 
+                prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
                 <div className={style.body__options__content}>
                   <SVGChecked className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
@@ -206,7 +238,7 @@ const GL = () => {
               }
 
               {
-                histoLicit  && !prodLict && !prodLictEsc ? 
+                histoLicit  && !cadPr && !prodLict && !prodLictEsc ? 
                 <div className={style.body__options__content}>
                   <SVGEstatistica className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
@@ -226,6 +258,12 @@ const GL = () => {
               {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
               {
+                cadPr && 
+                <div className={style.body__container__title_subtitle}>
+                  <h2 className={style.body__title}>Cadastrar Produtos no Almoxarifado</h2>
+                  <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
+                </div>
+                ||
                 prodLict && 
                 <div className={style.body__container__title_subtitle}>
                   <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
@@ -264,6 +302,53 @@ const GL = () => {
                     </section>
                 }
                 </section> 
+
+                ||
+
+                cadPr && 
+                  <>
+                    {
+                      modal 
+                        && 
+                      <div className={style.body__modal__post} >
+                        <div className={style.body__modal__container}>
+                          <ModalGL modal={modal} setModal={setModal}/>
+                        </div>
+                      </div>
+                    }
+                    
+                    <section className={style.body__show__cards}>
+                      <button className={style.body__button_post} 
+                        onClick={handleModal}>
+                          <p>
+                            Adicionar Produto
+
+                            <SvgPrancheta className={style.body__options__svg}/>
+                          </p>
+                      </button>
+
+                      {
+                        valueCadPr ?
+                        <>
+                          <h3 className={style.body__text__card}>
+                            Ultimo produto cadastrado.
+                          </h3>
+
+                          <Card 
+                          nome={valueCadPr.nome} key={valueCadPr._id}
+                          quantidadeProduto={valueCadPr.quantidadeProduto}
+                          unidadeMedida={valueCadPr.unidadeMedida}
+                          />
+                        </>
+                        :
+                        <section className={style.body__nobody__list}>
+                          <h3>
+                            Nenhum produto cadastrado
+                          </h3>
+                        </section>
+                      }
+                    </section>
+                  </>
 
                 ||
 
