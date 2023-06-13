@@ -23,7 +23,9 @@ const RT = () => {
   const [solicitados, setSolicitados] = React.useState(false)
   const [error, setError] = React.useState(false)
   const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
-
+  const [produtosLicitacao, setProdutosLicitacao] = React.useState(false)
+  const [produtosLicitacaoTrue, setProdutosLicitacaoTrue] = React.useState(false)
+  
   async function getUser(){
     const {data} = await api.get(`/usuario/${url}`)
 
@@ -35,15 +37,19 @@ const RT = () => {
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
         
         await api.get(`/secretaria/produtos/${data.secretaria}`)
-        .then(({data}) => setProdutos(data))
-          .catch(e => console.log(e))
+          .then(({data}) => setProdutos(data))
+            .catch(e => console.log(e))
 
         await api.get(`/rtFalse/${data.secretaria}`)
-        .then(({data}) => setSolicitados(data))
-          .catch(e => console.log(e))
+          .then(({data}) => setSolicitados(data))
+            .catch(e => console.log(e))
         
-          await api.get(`/rt/secretaria/${data.secretaria}`)
+        await api.get(`/rt/secretaria/${data.secretaria}`)
           .then(({data}) => setDataShowSolicitados(data))
+            .catch(e => console.log(e))
+        
+        await api.get(`/licitacao/produtos/${data.secretaria}`)
+          .then(({data}) => setProdutosLicitacao(data))
             .catch(e => console.log(e))
       }
     }catch(error){
@@ -57,6 +63,7 @@ const RT = () => {
   const [cadPr, setCadPr] = React.useState('')
   const [valueCadPr, setValueCadPr] = React.useState('')
   const [prodLict, setProdLict] = React.useState('')
+  const [produtosLicitados, setProdutosLicitados] = React.useState('')
   const [prodLictEsc, setProdLictEsc] = React.useState('')
   const [histoLicit, setHistoLicit] = React.useState('')
   const [modal, setModal] = React.useState(false)
@@ -85,6 +92,7 @@ const RT = () => {
   const handleClickCadPr = () => {
     setCadPr('active')
     setProdLict('')
+    setProdutosLicitados('')
     setProdLictEsc('')
     setHistoLicit('')
   }
@@ -92,6 +100,7 @@ const RT = () => {
   const handleClickProdLict =  () => {
     setCadPr('')
     setProdLict('active')
+    setProdutosLicitados('')
     setProdLictEsc('')
     setHistoLicit('')
 
@@ -107,9 +116,26 @@ const RT = () => {
     }
   }
 
+  console.log(produtosLicitacao);
+
+  const handleClickProdutosLicit = () => {
+    setCadPr('')
+    setProdLict('')
+    setProdutosLicitados('active')
+    setProdLictEsc('')
+    setHistoLicit('')
+
+    if(produtosLicitacao == false){
+      setProdutosLicitacaoTrue(false)
+    }else{
+      setProdutosLicitacaoTrue(produtosLicitacao)
+    }
+  }
+
   const handleClickProdLictEsc = () => {
     setCadPr('')
     setProdLict('')
+    setProdutosLicitados('')
     setProdLictEsc('active')
     setHistoLicit('')
 
@@ -123,6 +149,7 @@ const RT = () => {
   const handleClickhistoLicit = () => {
     setCadPr('')
     setProdLict('')
+    setProdutosLicitados('')
     setProdLictEsc('')
     setHistoLicit('active')
 
@@ -187,7 +214,7 @@ const RT = () => {
 
               <section className={style.body__options}>
               {
-                cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                cadPr && !prodLict && !produtosLicitados && !prodLictEsc && !histoLicit ? 
                 <div className={style.body__options__content}>
                   <SvgPrancheta className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickCadPr}>
@@ -204,7 +231,7 @@ const RT = () => {
               }
 
               {
-                prodLict && !cadPr && !prodLictEsc && !histoLicit? 
+                prodLict && !cadPr && !produtosLicitados && !prodLictEsc && !histoLicit? 
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLict}>
@@ -221,7 +248,24 @@ const RT = () => {
               }
 
               {
-                prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
+                produtosLicitados &&  !prodLict && !cadPr && !prodLictEsc && !histoLicit? 
+                <div className={style.body__options__content}>
+                  <SVGBox className={style.body__options__svg_active}/>
+                  <button className={style.body__options__button_active} onClick={handleClickProdutosLicit}>
+                    Produtos da Licitação
+                  </button> 
+                </div>
+                  : 
+                <div className={style.body__options__content}>
+                  <SVGBox className={style.body__options__svg}/>
+                  <button className={style.body__options__button} onClick={handleClickProdutosLicit}>
+                    Produtos da Licitação
+                  </button>
+                </div>
+              }
+
+              {
+                prodLictEsc && !cadPr && !prodLict && !produtosLicitados && !histoLicit ? 
                 <div className={style.body__options__content}>
                   <SVGAround className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
@@ -238,7 +282,7 @@ const RT = () => {
               }
 
               {
-                histoLicit && !cadPr && !prodLict && !prodLictEsc ? 
+                histoLicit && !cadPr && !prodLict && !produtosLicitados && !prodLictEsc ? 
                 <div className={style.body__options__content}>
                   <SVGEstatistica className={style.body__options__svg_active}/>
                   <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
@@ -269,6 +313,14 @@ const RT = () => {
                   <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
                   <p className={style.body__subtitle}>
                     Se deseja editar ou excluir um produto do almoxarifado, aperte no card e selecione "Editar" ou "Exlcuir".
+                  </p>
+                </div>
+                || 
+                produtosLicitados && 
+                <div className={style.body__container__title_subtitle}>
+                  <h2 className={style.body__title}>Produtos da Licitação</h2>
+                  <p className={style.body__subtitle}>
+                    Visualize os produtos da licitação que foram cadastrados.
                   </p>
                 </div>
                 || 
@@ -360,6 +412,28 @@ const RT = () => {
                     {
                       produtosTrue ?
                         produtosTrue.map((item) => (
+                          <Card 
+                          _id={item._id ? item._id : 0}
+                          key={item._id+item.nome}
+                          nome={item.nome}
+                          quantidadeProduto={item.quantidadeProduto}
+                          unidadeMedida={item.unidadeMedida}
+                          />
+                        )) 
+                        :  
+                        <section className={style.body__nobody__list}>
+                          <h3>Ainda não existe produtos no almoxarifado.</h3>
+                        </section>
+                    }
+                  </section> 
+
+                ||
+
+                produtosLicitados && 
+                  <section className={style.body__show__cards}>
+                    {
+                      produtosLicitacaoTrue ?
+                      produtosLicitacaoTrue.map((item) => (
                           <Card 
                           _id={item._id ? item._id : 0}
                           key={item._id+item.nome}
