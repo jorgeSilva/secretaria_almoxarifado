@@ -46,6 +46,9 @@ const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
     }
   }
 
+  React.useEffect(() => {
+  }, [])
+
   return (
     <>
       {
