@@ -9,7 +9,8 @@ import {ReactComponent as SVGBox} from  '../../assets/IconBox.svg'
 import {ReactComponent as SVGEstatistica} from  '../../assets/iconEstatisticas.svg'
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
 import Card from '../../components/Card/Card'
-import Modal from '../../components/Modal/Modal'
+import CardRT from '../../components/CardRT/Card'
+import ModalRT from '../../components/ModalRT/Modal'
 import CardSolicit from '../../components/CardSolicitSchool/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
 
@@ -80,8 +81,8 @@ const RT = () => {
     if(produtos){
       setDataSearch(produtos)
 
-      if(produtos[0]){
-        setValueCadPr(produtos.at(-1))
+      if(produtosLicitacao[0]){
+        setValueCadPr(produtosLicitacao.at(-1))
       }
     }
 
@@ -116,8 +117,6 @@ const RT = () => {
     }
   }
 
-  console.log(produtosLicitacao);
-
   const handleClickProdutosLicit = () => {
     setCadPr('')
     setProdLict('')
@@ -129,6 +128,11 @@ const RT = () => {
       setProdutosLicitacaoTrue(false)
     }else{
       setProdutosLicitacaoTrue(produtosLicitacao)
+      // for(let i = 0 ; i < produtosLicitacao.length; i++){
+      //   if(produtosLicitacao[i].quantidadeProduto <= 100){
+      //     alert(`O produto: ${produtosLicitacao[i].nome} está com menos de 100 ${produtosLicitacao[i].unidadeMedida} de saldo `)
+      //   }
+      // }
     }
   }
 
@@ -231,23 +235,6 @@ const RT = () => {
               }
 
               {
-                prodLict && !cadPr && !produtosLicitados && !prodLictEsc && !histoLicit? 
-                <div className={style.body__options__content}>
-                  <SVGBox className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                    Produtos no Almoxarifado
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SVGBox className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickProdLict}>
-                    Produtos no Almoxarifado
-                  </button>
-                </div>
-              }
-
-              {
                 produtosLicitados &&  !prodLict && !cadPr && !prodLictEsc && !histoLicit? 
                 <div className={style.body__options__content}>
                   <SVGBox className={style.body__options__svg_active}/>
@@ -260,6 +247,23 @@ const RT = () => {
                   <SVGBox className={style.body__options__svg}/>
                   <button className={style.body__options__button} onClick={handleClickProdutosLicit}>
                     Produtos da Licitação
+                  </button>
+                </div>
+              }
+
+              {
+                prodLict && !cadPr && !produtosLicitados && !prodLictEsc && !histoLicit? 
+                <div className={style.body__options__content}>
+                  <SVGBox className={style.body__options__svg_active}/>
+                  <button className={style.body__options__button_active} onClick={handleClickProdLict}>
+                    Produtos no Almoxarifado
+                  </button> 
+                </div>
+                  : 
+                <div className={style.body__options__content}>
+                  <SVGBox className={style.body__options__svg}/>
+                  <button className={style.body__options__button} onClick={handleClickProdLict}>
+                    Produtos no Almoxarifado
                   </button>
                 </div>
               }
@@ -367,7 +371,7 @@ const RT = () => {
                         && 
                       <div className={style.body__modal__post} >
                         <div className={style.body__modal__container}>
-                          <Modal modal={modal} setModal={setModal}/>
+                          <ModalRT modal={modal} setModal={setModal}/>
                         </div>
                       </div>
                     }
@@ -434,7 +438,7 @@ const RT = () => {
                     {
                       produtosLicitacaoTrue ?
                       produtosLicitacaoTrue.map((item) => (
-                          <Card 
+                          <CardRT
                           _id={item._id ? item._id : 0}
                           key={item._id+item.nome}
                           nome={item.nome}
