@@ -50,7 +50,10 @@ const RT = () => {
             .catch(e => console.log(e))
         
         await api.get(`/licitacao/produtos/${data.secretaria}`)
-          .then(({data}) => setProdutosLicitacao(data))
+          .then(({data}) => {
+            setProdutosLicitacao(data)
+            setValueCadPr(data.at(-1))
+          })
             .catch(e => console.log(e))
       }
     }catch(error){
@@ -80,10 +83,6 @@ const RT = () => {
 
     if(produtos){
       setDataSearch(produtos)
-
-      if(produtosLicitacao[0]){
-        setValueCadPr(produtosLicitacao.at(-1))
-      }
     }
 
     return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
@@ -393,7 +392,7 @@ const RT = () => {
                             Ultimo produto cadastrado.
                           </h3>
 
-                          <Card 
+                          <CardRT
                           nome={valueCadPr.nome} key={valueCadPr._id}
                           quantidadeProduto={valueCadPr.quantidadeProduto}
                           unidadeMedida={valueCadPr.unidadeMedida}
