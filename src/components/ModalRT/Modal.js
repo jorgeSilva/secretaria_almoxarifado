@@ -33,8 +33,6 @@ const Modal = ({modal, setModal}) => {
 
     try{
       setUser(data)
-
-      await api.get()
     }catch(e){
       console.log(e);
     }
@@ -65,8 +63,6 @@ const Modal = ({modal, setModal}) => {
   const handleModal = () => {
     setModal(!modal)
   }  
-
-  console.log(user);
 
   React.useEffect(() => {
     handleUser()
