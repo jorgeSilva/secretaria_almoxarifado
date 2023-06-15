@@ -24,29 +24,11 @@
   padding-top: 2rem;
 }
 
-.card__container:nth-child(6n){
- background-color: var(--p1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  border-radius: 20px;
-  padding: 2rem 3rem;
-  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-  transition: .1s;
-  border: none;
-}
-
 @media (max-width: 1670px) {
   .card__content{
     width: 95%;
     display: flex;
     flex-direction: column;
-  }
-  
-  .card__container:nth-child(6n){
-    width: 550px;
-    grid-column: 2;
   }
 }
 
@@ -99,10 +81,7 @@
     flex-direction: column;
   }
   
-  .card__container:nth-child(6n){
-    width: 550px;
-    grid-column: 2;
-  }
+ 
 }
 
 @media (max-width: 1550px) {
@@ -112,10 +91,7 @@
     flex-direction: column;
   }
   
-  .card__container:nth-child(6n){
-    width: 500px;
-    grid-column: 2;
-  }
+  
 }
 
 @media (max-width: 995px) {
@@ -125,10 +101,7 @@
     flex-direction: column;
   }
   
-  .card__container:nth-child(6n){
-    width: initial;
-    grid-column: 2;
-  }
+  
 }
 
 @media (max-width: 720px) {
@@ -142,10 +115,7 @@
     flex-direction: column;
   }
   
-  .card__container:nth-child(6n){
-    width: initial;
-    grid-column: 1 / -1;
-  }
+  
 }
 
 
@@ -236,6 +206,21 @@
   .card__button__excluir{
     font-size: 1rem;
     justify-content: center;
+  }
+  .card__password:nth-child(3n) :is(input:focus, input:valid) ~ label{
+    translate: -50px -70px;
+    scale: .8;
+  }
+
+  .card__textbox{
+    position: relative;
+    border: 0;
+    width: 100%;
+    font-family: 'Red Hat Display';
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 3rem;
+    text-align: start;
   }
 }
 

@@ -78,27 +78,48 @@ const Modal = ({data, modal, setModal}) => {
 
     setLoading(true)
     await api.get(`/licitacao/produtos/${user.secretaria}`)
-      .then(({data}) => {
-        for(let i = 0; i < data.length; i++){
-          if(data && nome == data[i].nome){
-            return (
-              api.post('/produto', {
-                nome,
-                quantidadeProduto: QTDP,
-                unidadeMedida: unidade,
-                secretaria: user.secretaria,
-                tempLicitacao: data[i]._id 
-              }).then(() => {
-                setLoading(false)
-                setError(false)
-                alert('Pedido cadastrado com sucesso.')
-                window.location.reload()
+      .then((r) => {
+        for(let i = 0; i < r.data.length; i++){
+          if(r.data && nome == r.data[i].nome){
+            
+            const produto =  api.post('/produto', {
+              nome,
+              quantidadeProduto: QTDP,
+              unidadeMedida: unidade,
+              secretaria: user.secretaria,
+              tempLicitacao: r.data[i]._id 
+            })
+
+            try{
+              setLoading(false)
+              api.put(`/licitacao/produtoENV/${r.data[i]._id}`, {
+                quantidadeProdutoENV: (r.data[i].quantidadeProduto - QTDP)
               })
-              .catch(error => {
-                setLoading(false)
-                setError(error.response.data.error)
-              })
-            )
+                .then(({data}) => {
+                  console.log(data);
+              }).catch(e => setError(e.response.data.error))
+              alert('Pedido cadastrado com sucesso.')
+              window.location.reload()
+            }catch(e){
+              return console.log('erro aqui');
+            }
+
+              // .then(({data}) => {
+              //   api.put(`/licitacao/produtoENV/${r.data[i]._id}`, {
+              //     quantidadeProdutoENV: (Number(r.data.quantidadeProduto) + Number(data.quantidadeProduto))
+              //   })
+              //     .then(({data}) => console.log(data))
+              //       .catch(e => setError(e.response.data.error))
+              //   setLoading(false)
+              //   setError(false)
+              //   alert('Pedido cadastrado com sucesso.')
+              //   // window.location.reload()
+              // })
+              // .catch(error => {
+              //   setLoading(false)
+              //   setError(error.response.data.error)
+              // })
+           
           }else if(data && nome != data[i].nome){
             setError('Produto não encontrado.')
           }

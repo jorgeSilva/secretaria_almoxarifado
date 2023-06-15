@@ -3,7 +3,7 @@ import style from './style.module.css'
 import ModalUpdateRT from '../ModalUpdateRT/Modal'
 import api from '../../services/api'
 
-const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
+const Card = ({nome, quantidadeProduto, quantidadeProdutoENV, unidadeMedida, _id}) => {
   /* ---------------------- Rotas da API --------------------------- */
   async function destroy(){
     await api.delete(`/licitacao/produtos/${_id}`)
@@ -92,6 +92,18 @@ const Card = ({nome, quantidadeProduto, unidadeMedida, _id}) => {
             />
 
             <label htmlFor={nome}>Quantidade Produto</label>
+          </div>
+
+          <div className={`${style.card__textbox} ${style.card__password}`}>
+            <input
+              ref={inputRef}
+              value={quantidadeProdutoENV}
+              onChange={handleInput}
+              id={nome}
+              required
+            />
+
+            <label htmlFor={nome}>Quantidade subtraida enviada para escolas</label>
           </div>
 
           <div className={`${style.card__textbox} ${style.card__password}`}>

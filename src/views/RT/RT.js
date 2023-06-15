@@ -436,6 +436,7 @@ const RT = () => {
                           nome={valueCadPr.nome} key={valueCadPr._id}
                           quantidadeProduto={valueCadPr.quantidadeProduto}
                           unidadeMedida={valueCadPr.unidadeMedida}
+                          quantidadeProdutoENV={valueCadPr.quantidadeProdutoENV}
                           />
                         </>
                         :
@@ -483,6 +484,7 @@ const RT = () => {
                           nome={item.nome}
                           quantidadeProduto={item.quantidadeProduto}
                           unidadeMedida={item.unidadeMedida}
+                          quantidadeProdutoENV={item.quantidadeProdutoENV}
                           />
                         )) 
                         :  

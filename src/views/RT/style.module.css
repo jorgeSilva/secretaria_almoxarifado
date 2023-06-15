@@ -641,7 +641,7 @@ button:hover, button:focus{
   .body__show__cards{
     grid-template-columns: 1fr;
     margin: 10rem 1rem;
-    gap: 0;
+    gap: 20px;
   }
 }
 
