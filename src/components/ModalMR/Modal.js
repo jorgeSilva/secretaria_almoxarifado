@@ -15,10 +15,8 @@ const Modal = ({data}) => {
   const [loading, setLoading] = React.useState(false)
 
   async function getProdutos(){
-    setLoading(true)
     await api.get(`/secretaria/produtos/${data.secretaria}`)
         .then(({data}) => {
-          setLoading(false)
           setProduto(data)
         })
           .catch(e => console.log(e))
@@ -68,13 +66,13 @@ const Modal = ({data}) => {
       return alert('Precisa ser informado a unidade de medida.')
     }
 
-    setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
       setUser(data)
 
       if(data){
+        setLoading(true)
         await api.get(`/secretaria/produtos/${data.secretaria}`)
           .then(({data}) => {
             if(data){
@@ -90,17 +88,28 @@ const Modal = ({data}) => {
                     produto: data[i]._id,
                     secretaria: data[i].secretaria,
                     horario:  `${String(hora.getDate())}/${String(hora.getMonth()+1)}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
-                  }).then(() => {
+                  }).then(({data}) => {
                     setLoading(false)
+                    console.log(data);
                     alert('Solicitação enviada com sucesso.')
                     window.location.reload()
                   })
-                  .catch(error => setError(error.response.data.error))
+                  .catch(error => {
+                    setLoading(false)
+                    setError(error.response.data.error)
+                  })
+                }else if(data && nome != data[i].nome){
+                  setError('Produto não encontrado.')
                 }
               }
             }
+            setLoading(false)
           }
         )
+        .catch(error => {
+          setLoading(false)
+          console.log(error)
+        })
       }
     }catch(e){
       setError(e.response.data.error)
