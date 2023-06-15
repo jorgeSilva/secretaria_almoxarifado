@@ -84,15 +84,38 @@ const RT = () => {
   const [loading, setLoading] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
-    const lowerCase = search.toLocaleLowerCase()
+    // const lowerCase = search.toLocaleLowerCase()
+    //   if(produtos && produtosLicitacao){
+    //     setDataSearch(produtos.concat(produtosLicitacao))
+    //     return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+    //   }
 
-    if(produtos){
-      setDataSearch(produtos)
+    if(prodLict){
+
+      const lowerCase = search.toLocaleLowerCase()
+      if(produtos){
+        setDataSearch(produtos)
+        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+      }
     }
 
-    return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+    if(produtosLicitados){
 
-  }, [produtos, search])
+      const lowerCase = search.toLocaleLowerCase()
+      if(produtosLicitacao){
+        setDataSearch(produtosLicitacao)
+        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+      }
+    }
+
+    if(histoLicit){
+      const lowerCase = search.toLocaleLowerCase()
+      if(existShowSl){
+        setDataSearch(existShowSl)
+        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+      }
+    }
+  }, [produtos, produtosLicitacao, existShowSl, search])
 
   const handleClickCadPr = () => {
     setCadPr('active')
@@ -344,6 +367,12 @@ const RT = () => {
                   <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
                   <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
                 </div>
+                || 
+                search && 
+                <div className={style.body__container__title_subtitle}>
+                  <h2 className={style.body__title}>Digite o nome e faça a busca</h2>
+                  <p className={style.body__subtitle}>Visualize todos os produtos que possuem cada letra informada.</p>
+                </div>
               }
             
 
@@ -362,7 +391,12 @@ const RT = () => {
                     )) 
                     :  
                     <section className={style.body__nobody__list}>
-                      <h3>Ainda não existe produtos no almoxarifado.</h3>
+                      <h3>Selecione o botão</h3>
+                      <p>"Produtos no Almoxarifado"</p>
+                      <p>"Produtos da Licitação"</p> 
+                      {/* <p>"Produtos Solicitados"</p> 
+                      <p>"Historico de Solicitações" </p> */}
+                      <h3> Para a listagem dos produtos.</h3>
                     </section>
                 }
                 </section> 

@@ -98,7 +98,7 @@ const GL = () => {
     }else{
       setProdutosTrue(produtos)
       for(let i = 0 ; i < produtos.length; i++){
-        if(produtos[i].quantidadeProduto <= 100){
+        if(produtos[i].quantidadeProduto <= (produtos[i].quantidadeProduto * 0.10) ){
           alert(`O produto: ${produtos[i].nome} está com menos de 100 ${produtos[i].unidadeMedida}`)
         }
       }
