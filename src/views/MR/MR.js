@@ -24,8 +24,10 @@ const MR = () => {
   const [ultimoRequisited, setUltimoRequisited] = React.useState(false)
   const [produtos, setProdutos] = React.useState(null)
   const [error, setError] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
 
   async function getUser(){
+    setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
     try{
       setData(data)
@@ -34,26 +36,31 @@ const MR = () => {
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
       }
+      setLoading(false)
     }catch(error){
       console.log(error);
     }
   }
 
   async function getRequisited(){
+    setLoading(true)
     await api.get(`/rt/${url}`)
       .then(({data}) => {
         setLastRequisited(data)
         setUltimoRequisited(data.at(-1))
+        setLoading(false)
       })
         .catch(error => console.log(error))
   }
 
   async function getSolicitados(){
+    setLoading(true)
     const { data } = await api.get(`/rt/gl/aprovados/${url}`)
       try{
         if(data == true || data){
           setProdutos(data)
         }
+        setLoading(false)
       }catch(error){
         setError(error)
       }
@@ -115,187 +122,191 @@ const MR = () => {
           <div className={style.body__background_two}></div>
           <div className={style.body__background_tree}></div>
         </div>
-
-        <section className={style.body__container}>
-          <section className={style.body__content}>
-            <header className={style.body__header}>
-              <div className={style.body__header__child}>
-                {
-                  date.getHours() < 12 ? 
-                  <h1> Bom dia {name}.</h1> : ''
-                  || 
-                  date.getHours() >= 12 && date.getHours() < 18 ? 
-                  <h1>Boa tarde {name}.</h1> : ''
-                  ||
-                  date.getHours() >= 18 ? 
-                  <h1>Boa noite {name}.</h1> : ''
-                }
-
-                <div className={style.body__container_search}>
-                  <input 
-                    value={search}
-                    id='search'
-                    onChange={({target}) => setSearch(target.value)}
-                    placeholder='Procure um produto pelo nome.' 
-                    className={style.body__search}/>
-                  
-                  <label htmlFor='search'>
-                    <SVGSearch/>
-                  </label>
-                </div>
-              </div>
-            </header>
-
-            {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
-            <section className={style.body__options}>
-              {
-                solicitar && !atualizar ? 
-                <div className={style.body__options__content}>
-                  <SvgPrancheta className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClicksolicitar}>
-                    Solicitar
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SvgPrancheta className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClicksolicitar}>
-                    Solicitar
-                  </button>
-                </div>
-              }
-
-              {
-                atualizar && !solicitar ? 
-                <div className={style.body__options__content}>
-                  <SVGRotate className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickatualizar}>
-                  Atualizar produtos recem chegados
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SVGRotate className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickatualizar}>
-                  Atualizar produtos recem chegados
-                  </button>
-                </div>
-              }
-            </section>
-
-            {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
-
-            {
-              solicitar && 
-              <div className={style.body__container__title_subtitle}>
-                <h2 className={style.body__title}>Solicitar Produtos</h2>
-                <p className={style.body__subtitle}>Clique em "Solicitar Produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
-              </div>
-                ||
-              atualizar && 
-              <div className={style.body__container__title_subtitle}>
-                <h2 className={style.body__title}>Atualizar Produtos Recém Chegados</h2>
-                <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
-              </div>
-            }
-            
-            {
-              search &&
-              <section className={style.body__show__cards}>
-              {
-                 ProdutosFiltrados ?
-                   ProdutosFiltrados.map((item) => (
-                     <CardModal
-                     nome={item.nome} key={item._id}
-                     quantidadeProduto={item.quantidadeProduto}
-                     unidadeMedida={item.unidadeMedida}
-                     />
-                   )) 
-                   :  
-                   <section className={style.body__nobody__list}>
-                     <h3>Ainda não existe produtos no almoxarifado.</h3>
-                   </section>
-              }
-              </section> 
-
-              ||
-
-              solicitar && 
-                <>
-                  <section className={style.body__show__cards}>
+        {
+          loading ? 
+            <p className={style.body__loading}>Carregando...</p> 
+            :
+            <section className={style.body__container}>
+              <section className={style.body__content}>
+                <header className={style.body__header}>
+                  <div className={style.body__header__child}>
                     {
-                      active &&  
-                        <section className={style.body__card__solicit__active}>
-                          <CardModal data={data}/>
-                        </section>  
+                      date.getHours() < 12 ? 
+                      <h1> Bom dia {name}.</h1> : ''
+                      || 
+                      date.getHours() >= 12 && date.getHours() < 18 ? 
+                      <h1>Boa tarde {name}.</h1> : ''
+                      ||
+                      date.getHours() >= 18 ? 
+                      <h1>Boa noite {name}.</h1> : ''
                     }
 
-                    <button className={style.body__button_post} 
-                      onClick={() => setActive(!active)}>
-                      <p>
-                        Solicitar Produto
+                    <div className={style.body__container_search}>
+                      <input 
+                        value={search}
+                        id='search'
+                        onChange={({target}) => setSearch(target.value)}
+                        placeholder='Procure um produto pelo nome.' 
+                        className={style.body__search}/>
+                      
+                      <label htmlFor='search'>
+                        <SVGSearch/>
+                      </label>
+                    </div>
+                  </div>
+                </header>
 
-                        <SvgPrancheta className={style.body__options__svg}/>
-                      </p>
-                    </button>
-                    {
-                      ultimoRequisited ?
-                      <>  
-                        <h3 className={style.body__text__card}>
-                          Ultimo produto solicitado.
-                        </h3>
-                       
-                        <Card nome={ultimoRequisited.nome} quantidadeProduto={ultimoRequisited.quantidadeProduto} unidadeMedida={ultimoRequisited.unidadeMedida}/>
-                      </>
-                        :
-                      <h3 className={style.body__text__card}>
-                        Não foi solicitado nenhum produto
-                      </h3>
-                    }
-                  </section>
-                </>
-
-              ||
-
-              atualizar && 
-                <section className={style.body__show__cards}>
+                {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
+                <section className={style.body__options}>
                   {
-                    attRecem ?
-                      attRecem.map((item) => (
-                        <CardSolicit 
-                        key={item._id}
-                        _id={item._id}
-                        rt={item.rt}
-                        entregue={item.entregue}
-                        horario={item.horario} 
-                        nome={item.nome} 
-                        quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
-                        unidadeMedida={item.unidadeMedida} 
-                        merendeira={item.merendeira.name}
-                        idEscola={item.merendeira.fkEscola}
-                        secretaria={item.secretaria._id}
-                        />
-                      )) 
-                      :  
-                      
-                      <section className={style.body__nobody__list}>
-                        <h3>Nenhum produto foi enviado</h3>
-                      </section>
-                      
+                    solicitar && !atualizar ? 
+                    <div className={style.body__options__content}>
+                      <SvgPrancheta className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClicksolicitar}>
+                        Solicitar
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SvgPrancheta className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClicksolicitar}>
+                        Solicitar
+                      </button>
+                    </div>
+                  }
+
+                  {
+                    atualizar && !solicitar ? 
+                    <div className={style.body__options__content}>
+                      <SVGRotate className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClickatualizar}>
+                      Atualizar produtos recem chegados
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGRotate className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClickatualizar}>
+                      Atualizar produtos recem chegados
+                      </button>
+                    </div>
                   }
                 </section>
 
-              ||
+                {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
-              <section className={style.body__nobody__option}>
-              <h3>Escolha uma opção</h3>
-              <div className={style.body__icon__option}>
-                <SVGIconeOption />
-              </div>
+                {
+                  solicitar && 
+                  <div className={style.body__container__title_subtitle}>
+                    <h2 className={style.body__title}>Solicitar Produtos</h2>
+                    <p className={style.body__subtitle}>Clique em "Solicitar Produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
+                  </div>
+                    ||
+                  atualizar && 
+                  <div className={style.body__container__title_subtitle}>
+                    <h2 className={style.body__title}>Atualizar Produtos Recém Chegados</h2>
+                    <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
+                  </div>
+                }
+                
+                {
+                  search &&
+                  <section className={style.body__show__cards}>
+                  {
+                    ProdutosFiltrados ?
+                      ProdutosFiltrados.map((item) => (
+                        <CardModal
+                        nome={item.nome} key={item._id}
+                        quantidadeProduto={item.quantidadeProduto}
+                        unidadeMedida={item.unidadeMedida}
+                        />
+                      )) 
+                      :  
+                      <section className={style.body__nobody__list}>
+                        <h3>Ainda não existe produtos no almoxarifado.</h3>
+                      </section>
+                  }
+                  </section> 
+
+                  ||
+
+                  solicitar && 
+                    <>
+                      <section className={style.body__show__cards}>
+                        {
+                          active &&  
+                            <section className={style.body__card__solicit__active}>
+                              <CardModal data={data}/>
+                            </section>  
+                        }
+
+                        <button className={style.body__button_post} 
+                          onClick={() => setActive(!active)}>
+                          <p>
+                            Solicitar Produto
+
+                            <SvgPrancheta className={style.body__options__svg}/>
+                          </p>
+                        </button>
+                        {
+                          ultimoRequisited ?
+                          <>  
+                            <h3 className={style.body__text__card}>
+                              Ultimo produto solicitado.
+                            </h3>
+                          
+                            <Card nome={ultimoRequisited.nome} quantidadeProduto={ultimoRequisited.quantidadeProduto} unidadeMedida={ultimoRequisited.unidadeMedida}/>
+                          </>
+                            :
+                          <h3 className={style.body__text__card}>
+                            Não foi solicitado nenhum produto
+                          </h3>
+                        }
+                      </section>
+                    </>
+
+                  ||
+
+                  atualizar && 
+                    <section className={style.body__show__cards}>
+                      {
+                        attRecem ?
+                          attRecem.map((item) => (
+                            <CardSolicit 
+                            key={item._id}
+                            _id={item._id}
+                            rt={item.rt}
+                            entregue={item.entregue}
+                            horario={item.horario} 
+                            nome={item.nome} 
+                            quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
+                            unidadeMedida={item.unidadeMedida} 
+                            merendeira={item.merendeira.name}
+                            idEscola={item.merendeira.fkEscola}
+                            secretaria={item.secretaria._id}
+                            />
+                          )) 
+                          :  
+                          
+                          <section className={style.body__nobody__list}>
+                            <h3>Nenhum produto foi enviado</h3>
+                          </section>
+                          
+                      }
+                    </section>
+
+                  ||
+
+                  <section className={style.body__nobody__option}>
+                  <h3>Escolha uma opção</h3>
+                  <div className={style.body__icon__option}>
+                    <SVGIconeOption />
+                  </div>
+                </section>
+                }
+              </section>
             </section>
-            }
-          </section>
-        </section>
+        }
       </section>
     </>
   )

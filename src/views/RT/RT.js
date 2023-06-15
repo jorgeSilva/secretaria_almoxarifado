@@ -28,6 +28,7 @@ const RT = () => {
   const [produtosLicitacaoTrue, setProdutosLicitacaoTrue] = React.useState(false)
   
   async function getUser(){
+    setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
@@ -55,6 +56,9 @@ const RT = () => {
             setValueCadPr(data.at(-1))
           })
             .catch(e => console.log(e))
+
+        setLoading(false)
+        
       }
     }catch(error){
       setError(error);
@@ -77,6 +81,7 @@ const RT = () => {
   const [escTrue, setEscTrue] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
   const [existShowSl, setExistShowSl] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
     const lowerCase = search.toLocaleLowerCase()
@@ -182,7 +187,8 @@ const RT = () => {
             <div className={style.body__background_two}></div>
             <div className={style.body__background_tree}></div>
           </div>
-
+          {
+            loading ? <p className={style.body__loading}>Carregando...</p> :
           <section className={style.body__container}>
             <section className={style.body__content}>
               <header className={style.body__header}>
@@ -520,6 +526,7 @@ const RT = () => {
               }
             </section>
           </section>
+          }
       </section>
     </>
   )

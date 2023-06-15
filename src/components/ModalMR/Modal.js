@@ -12,10 +12,15 @@ const Modal = ({data}) => {
   const [user, setUser] = React.useState(false)
   const [produto, setProduto] = React.useState(false)
   const [filterProdutos, setFilterProdutos] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
 
   async function getProdutos(){
+    setLoading(true)
     await api.get(`/secretaria/produtos/${data.secretaria}`)
-        .then(({data}) => setProduto(data))
+        .then(({data}) => {
+          setLoading(false)
+          setProduto(data)
+        })
           .catch(e => console.log(e))
   }
 
@@ -65,6 +70,7 @@ const Modal = ({data}) => {
       return alert('Precisa ser informado a unidade de medida.')
     }
 
+    setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
@@ -87,6 +93,7 @@ const Modal = ({data}) => {
                     secretaria: data[i].secretaria,
                     horario:  `${String(hora.getDate())}/${String(hora.getMonth()+1)}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
                   }).then(() => {
+                    setLoading(false)
                     alert('Solicitação enviada com sucesso.')
                     window.location.reload()
                   })
@@ -168,7 +175,10 @@ const Modal = ({data}) => {
 
             {
               error && <p className={style.modal__p__error}>{error}</p>
-            }
+            }{
+              loading && 
+                <p className={style.modal__loading}>Enviando...</p> 
+              }
           </div>
         </div>
       </>

@@ -10,6 +10,7 @@ const Modal = ({modal, setModal}) => {
   const [unidade, setUnidade] = React.useState('')
   const [error, setError] = React.useState(false)
   const [user, setUser] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
  
   const handleNome = (e) => {
     setNome(e.target.value)
@@ -29,9 +30,12 @@ const Modal = ({modal, setModal}) => {
   }
 
   async function handleUser(){
+    setLoading(true)
+
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
+      setLoading(false)
       setUser(data)
     }catch(e){
       console.log(e);
@@ -47,6 +51,7 @@ const Modal = ({modal, setModal}) => {
       return alert('Precisa ser informado a unidade de medida.')
     }
 
+    setLoading(true)
     await api.get(`/licitacao/produtos/${user.secretaria}`)
       .then(({data}) => {
         for(let i = 0; i < data.length; i++){
@@ -58,10 +63,14 @@ const Modal = ({modal, setModal}) => {
               secretaria: user.secretaria,
               tempLicitacao: data[i]._id 
             }).then(() => {
+                setLoading(false)
                 alert('Pedido cadastrado com sucesso.')
                 window.location.reload()
               })
-                .catch(error => setError(error.response.data.error))
+                .catch(error => {
+                  setLoading(false)
+                  setError(error.response.data.error)
+                })
           }
         }
       }).catch(e => console.log(e))
@@ -124,7 +133,10 @@ const Modal = ({modal, setModal}) => {
             </button>
             {
               error && <p className={style.modal__p__error}>{error}</p>
-            }
+            }{
+              loading && 
+                <p className={style.modal__loading}>Enviando...</p> 
+              }
           </div>
         </div>
       </>

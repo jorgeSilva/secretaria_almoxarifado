@@ -21,8 +21,10 @@ const GL = () => {
   const [produtos, setProdutos] = React.useState(null)
   const [solicitados, setSolicitados] = React.useState(false)
   const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   async function getUser(){
+    setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
@@ -44,6 +46,7 @@ const GL = () => {
         .then(({data}) => setDataShowSolicitados(data))
           .catch(e => console.log(e))
       }
+      setLoading(false)
     }catch(error){
       console.log(error);
     }
@@ -153,212 +156,147 @@ const GL = () => {
           <div className={style.body__background_two}></div>
           <div className={style.body__background_tree}></div>
         </div>
+        {
+          loading ? 
+            <p className={style.body__loading}>Carregando...</p> 
+            :
+            <section className={style.body__container}>
+                <section className={style.body__content}>
+                  <header className={style.body__header}>
+                    <div className={style.body__header__child}>
+                      {
+                        date.getHours() < 12 ? 
+                        <h1> Bom dia {name}.</h1> : ''
+                        || 
+                        date.getHours() >= 12 && date.getHours() < 18 ? 
+                        <h1>Boa tarde {name}.</h1> : ''
+                        ||
+                        date.getHours() >= 18 ? 
+                        <h1>Boa noite {name}.</h1> : ''
+                      }
 
-        <section className={style.body__container}>
-            <section className={style.body__content}>
-              <header className={style.body__header}>
-                <div className={style.body__header__child}>
+                      <div className={style.body__container_search}>
+                        <input 
+                          value={search}
+                          id='search'
+                          onChange={({target}) => setSearch(target.value)}
+                          placeholder='Procure um produto pelo nome.' 
+                          className={style.body__search}/>
+                        
+                        <label htmlFor='search'>
+                          <SVGSearch/>
+                        </label>
+                      </div>
+                    </div>
+                  </header>
+
+                  {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
+
+                  <section className={style.body__options}>
                   {
-                    date.getHours() < 12 ? 
-                    <h1> Bom dia {name}.</h1> : ''
-                    || 
-                    date.getHours() >= 12 && date.getHours() < 18 ? 
-                    <h1>Boa tarde {name}.</h1> : ''
-                    ||
-                    date.getHours() >= 18 ? 
-                    <h1>Boa noite {name}.</h1> : ''
+                    cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                    <div className={style.body__options__content}>
+                      <SvgPrancheta className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClickCadPr}>
+                        Cadastrar produtos no almoxarifado
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SvgPrancheta className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClickCadPr}>
+                        Cadastrar produtos no almoxarifado
+                      </button>
+                    </div>
+                  }
+                  {
+                    prodLict &&  !cadPr && !prodLictEsc && !histoLicit? 
+                    <div className={style.body__options__content}>
+                      <SVGBox className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClickProdLict}>
+                        Produtos no Almoxarifado
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGBox className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClickProdLict}>
+                        Produtos no Almoxarifado
+                      </button>
+                    </div>
                   }
 
-                  <div className={style.body__container_search}>
-                    <input 
-                      value={search}
-                      id='search'
-                      onChange={({target}) => setSearch(target.value)}
-                      placeholder='Procure um produto pelo nome.' 
-                      className={style.body__search}/>
-                    
-                    <label htmlFor='search'>
-                      <SVGSearch/>
-                    </label>
-                  </div>
-                </div>
-              </header>
-
-              {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
-
-              <section className={style.body__options}>
-              {
-                cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
-                <div className={style.body__options__content}>
-                  <SvgPrancheta className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickCadPr}>
-                    Cadastrar produtos no almoxarifado
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SvgPrancheta className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickCadPr}>
-                    Cadastrar produtos no almoxarifado
-                  </button>
-                </div>
-              }
-              {
-                prodLict &&  !cadPr && !prodLictEsc && !histoLicit? 
-                <div className={style.body__options__content}>
-                  <SVGBox className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                    Produtos no Almoxarifado
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SVGBox className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickProdLict}>
-                    Produtos no Almoxarifado
-                  </button>
-                </div>
-              }
-
-              {
-                prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
-                <div className={style.body__options__content}>
-                  <SVGChecked className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
-                    Enviar para escolas
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SVGChecked className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickProdLictEsc}>
-                  Enviar para escolas
-                  </button>
-                </div>
-              }
-
-              {
-                histoLicit  && !cadPr && !prodLict && !prodLictEsc ? 
-                <div className={style.body__options__content}>
-                  <SVGEstatistica className={style.body__options__svg_active}/>
-                  <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
-                    Historico de solicitação
-                  </button> 
-                </div>
-                  : 
-                <div className={style.body__options__content}>
-                  <SVGEstatistica className={style.body__options__svg}/>
-                  <button className={style.body__options__button} onClick={handleClickhistoLicit}>
-                    Historico de solicitação
-                  </button>
-                </div>
-              }
-              </section>
-
-              {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
-
-              {
-                cadPr && 
-                <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Cadastrar Produtos no Almoxarifado</h2>
-                  <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
-                </div>
-                ||
-                prodLict && 
-                <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
-                  <p className={style.body__subtitle}>Role a página para ver os produtos no almoxarifado, ou pesquise no campo de busca acima.</p>
-                </div>
-                || 
-                prodLictEsc && 
-                <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Enviar às escolas</h2>
-                  <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Enviar para escola".</p>
-                </div>
-                || 
-                histoLicit && 
-                <div className={style.body__container__title_subtitle}>
-                  <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
-                  <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
-                </div>
-              }
-            
-
-              {
-                search &&
-                <section className={style.body__show__cards}>
-                {
-                  ProdutosFiltrados ?
-                    ProdutosFiltrados.map((item) => (
-                      <Card 
-                      nome={item.nome} key={item._id}
-                      quantidadeProduto={item.quantidadeProduto}
-                      unidadeMedida={item.unidadeMedida}
-                      />
-                    )) 
-                    :  
-                    <section className={style.body__nobody__list}>
-                      <h3>Ainda não existe produtos no almoxarifado.</h3>
-                    </section>
-                }
-                </section> 
-
-                ||
-
-                cadPr && 
-                  <>
-                    {
-                      modal 
-                        && 
-                      <div className={style.body__modal__post} >
-                        <div className={style.body__modal__container}>
-                          <ModalGL modal={modal} setModal={setModal}/>
-                        </div>
-                      </div>
-                    }
-                    
-                    <section className={style.body__show__cards}>
-                      <button className={style.body__button_post} 
-                        onClick={handleModal}>
-                          <p>
-                            Adicionar Produto
-
-                            <SvgPrancheta className={style.body__options__svg}/>
-                          </p>
+                  {
+                    prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
+                    <div className={style.body__options__content}>
+                      <SVGChecked className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
+                        Enviar para escolas
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGChecked className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClickProdLictEsc}>
+                      Enviar para escolas
                       </button>
+                    </div>
+                  }
 
-                      {
-                        valueCadPr ?
-                        <>
-                          <h3 className={style.body__text__card}>
-                            Ultimo produto cadastrado.
-                          </h3>
+                  {
+                    histoLicit  && !cadPr && !prodLict && !prodLictEsc ? 
+                    <div className={style.body__options__content}>
+                      <SVGEstatistica className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
+                        Historico de solicitação
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGEstatistica className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleClickhistoLicit}>
+                        Historico de solicitação
+                      </button>
+                    </div>
+                  }
+                  </section>
 
-                          <Card 
-                          nome={valueCadPr.nome} key={valueCadPr._id}
-                          quantidadeProduto={valueCadPr.quantidadeProduto}
-                          unidadeMedida={valueCadPr.unidadeMedida}
-                          />
-                        </>
-                        :
-                        <section className={style.body__nobody__list}>
-                          <h3>
-                            Nenhum produto cadastrado
-                          </h3>
-                        </section>
-                      }
-                    </section>
-                  </>
+                  {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
-                ||
+                  {
+                    cadPr && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Cadastrar Produtos no Almoxarifado</h2>
+                      <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
+                    </div>
+                    ||
+                    prodLict && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
+                      <p className={style.body__subtitle}>Role a página para ver os produtos no almoxarifado, ou pesquise no campo de busca acima.</p>
+                    </div>
+                    || 
+                    prodLictEsc && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Enviar às escolas</h2>
+                      <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Enviar para escola".</p>
+                    </div>
+                    || 
+                    histoLicit && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
+                      <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
+                    </div>
+                  }
+                
 
-                prodLict && 
-                  <section className={style.body__show__cards}>
+                  {
+                    search &&
+                    <section className={style.body__show__cards}>
                     {
-                      produtosTrue ?
-                        produtosTrue.map((item) => (
+                      ProdutosFiltrados ?
+                        ProdutosFiltrados.map((item) => (
                           <Card 
-                          _id={item._id}
                           nome={item.nome} key={item._id}
                           quantidadeProduto={item.quantidadeProduto}
                           unidadeMedida={item.unidadeMedida}
@@ -369,78 +307,147 @@ const GL = () => {
                           <h3>Ainda não existe produtos no almoxarifado.</h3>
                         </section>
                     }
-                  </section> 
+                    </section> 
 
-                ||
+                    ||
 
-                prodLictEsc && 
-                <section className={style.body__show__cards}>
-                  {
-                    envioEsc ?
-                    envioEsc.map((item, index) => (
-                        <>
-                          <div key={index + item} className={style.body__show__checkbox} >
-                          {
-                              item.solicitado || 
-                                <CardSolicit 
-                                  _id={item._id}
-                                  rt={item.rt}
-                                  horario={item.horario} 
-                                  nome={item.nome} 
-                                  quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
-                                  unidadeMedida={item.unidadeMedida} merendeira={item.merendeira.name}
-                                  idEscola={item.merendeira.fkEscola}/>
-                            }
+                    cadPr && 
+                      <>
+                        {
+                          modal 
+                            && 
+                          <div className={style.body__modal__post} >
+                            <div className={style.body__modal__container}>
+                              <ModalGL modal={modal} setModal={setModal}/>
+                            </div>
                           </div>
-                        </>
-                      ))
-                      :
-                      <section className={style.body__nobody__list}>
-                        <h3>Não tem nenhuma solicitação pendente.</h3>
-                      </section>
-                  }
-                </section> 
+                        }
+                        
+                        <section className={style.body__show__cards}>
+                          <button className={style.body__button_post} 
+                            onClick={handleModal}>
+                              <p>
+                                Adicionar Produto
 
-              ||
+                                <SvgPrancheta className={style.body__options__svg}/>
+                              </p>
+                          </button>
 
-                histoLicit && 
-                  <section className={style.body__show__cards}> 
-                    {
-                      existShowSl != false ? 
-                      existShowSl.map((item) => (
-                        <CardSolicitShow 
-                        key={item._id+item.nome}
-                        _id={item._id}
-                        rt={item.rt}
-                        horario={item.horario} 
-                        nome={item.nome} 
-                        quantidadeProduto={item.quantidadeProduto} 
-                        solicitado={item.solicitado} 
-                        unidadeMedida={item.unidadeMedida} 
-                        merendeira={item.merendeira.name}
-                        idEscola={item.merendeira.fkEscola}
-                        entregue={item.entregue}
-                        totalProduto={item.produto != null ? item.produto.quantidadeProduto : 'Não mais existente no almoxarifado'}
-                        />                      
-                      ))
-                      :
-                      <section className={style.body__nobody__list}>
-                        <h3>Nenhum produto solicitado</h3>
+                          {
+                            valueCadPr ?
+                            <>
+                              <h3 className={style.body__text__card}>
+                                Ultimo produto cadastrado.
+                              </h3>
+
+                              <Card 
+                              nome={valueCadPr.nome} key={valueCadPr._id}
+                              quantidadeProduto={valueCadPr.quantidadeProduto}
+                              unidadeMedida={valueCadPr.unidadeMedida}
+                              />
+                            </>
+                            :
+                            <section className={style.body__nobody__list}>
+                              <h3>
+                                Nenhum produto cadastrado
+                              </h3>
+                            </section>
+                          }
+                        </section>
+                      </>
+
+                    ||
+
+                    prodLict && 
+                      <section className={style.body__show__cards}>
+                        {
+                          produtosTrue ?
+                            produtosTrue.map((item) => (
+                              <Card 
+                              _id={item._id}
+                              nome={item.nome} key={item._id}
+                              quantidadeProduto={item.quantidadeProduto}
+                              unidadeMedida={item.unidadeMedida}
+                              />
+                            )) 
+                            :  
+                            <section className={style.body__nobody__list}>
+                              <h3>Ainda não existe produtos no almoxarifado.</h3>
+                            </section>
+                        }
+                      </section> 
+
+                    ||
+
+                    prodLictEsc && 
+                    <section className={style.body__show__cards}>
+                      {
+                        envioEsc ?
+                        envioEsc.map((item, index) => (
+                            <>
+                              <div key={index + item} className={style.body__show__checkbox} >
+                              {
+                                  item.solicitado || 
+                                    <CardSolicit 
+                                      _id={item._id}
+                                      rt={item.rt}
+                                      horario={item.horario} 
+                                      nome={item.nome} 
+                                      quantidadeProduto={item.quantidadeProduto} solicitado={item.solicitado} 
+                                      unidadeMedida={item.unidadeMedida} merendeira={item.merendeira.name}
+                                      idEscola={item.merendeira.fkEscola}/>
+                                }
+                              </div>
+                            </>
+                          ))
+                          :
+                          <section className={style.body__nobody__list}>
+                            <h3>Não tem nenhuma solicitação pendente.</h3>
+                          </section>
+                      }
+                    </section> 
+
+                  ||
+
+                    histoLicit && 
+                      <section className={style.body__show__cards}> 
+                        {
+                          existShowSl != false ? 
+                          existShowSl.map((item) => (
+                            <CardSolicitShow 
+                            key={item._id+item.nome}
+                            _id={item._id}
+                            rt={item.rt}
+                            horario={item.horario} 
+                            nome={item.nome} 
+                            quantidadeProduto={item.quantidadeProduto} 
+                            solicitado={item.solicitado} 
+                            unidadeMedida={item.unidadeMedida} 
+                            merendeira={item.merendeira.name}
+                            idEscola={item.merendeira.fkEscola}
+                            entregue={item.entregue}
+                            totalProduto={item.produto != null ? item.produto.quantidadeProduto : 'Não mais existente no almoxarifado'}
+                            />                      
+                          ))
+                          :
+                          <section className={style.body__nobody__list}>
+                            <h3>Nenhum produto solicitado</h3>
+                          </section>  
+                        }
                       </section>  
-                    }
-                  </section>  
 
-              ||
+                  ||
 
-                <section className={style.body__nobody__option}>
-                  <h3>Escolha uma opção</h3>
-                  <div className={style.body__icon__option}>
-                    <SVGIconeOption />
-                  </div>
+                    <section className={style.body__nobody__option}>
+                      <h3>Escolha uma opção</h3>
+                      <div className={style.body__icon__option}>
+                        <SVGIconeOption />
+                      </div>
+                    </section>
+                  }
                 </section>
-              }
             </section>
-          </section>
+        }
       </section>
     </>
   )

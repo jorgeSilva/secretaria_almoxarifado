@@ -1,3 +1,15 @@
+.modal__loading{
+  font-size: 1.5rem;
+  background-color: rgb(212, 231, 211);
+  color: var(--p1);
+  border: 2px solid var(--outline);
+  font-weight: 700;
+  text-align: center;
+  margin-top: 2rem;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
 .modal__container{
   display: flex;
   flex-direction: column;

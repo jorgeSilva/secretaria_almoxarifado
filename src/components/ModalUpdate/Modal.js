@@ -6,14 +6,14 @@ import { ReactComponent as SVGClose } from '../../assets/iconClose.svg'
 const Modal = ({modal, setModal, name, _id, quantidadeProduto, unidadeMedida}) => {
 /* ---------------------- Rotas da API --------------------------- */
 
-console.log(name, quantidadeProduto, unidadeMedida);
-
 async function updateProduto(){
+  setLoading(true)
   await api.put(`/produto/${_id}`, {
     nome: nome,
     quantidadeProduto: QTDP,
     unidadeMedida: unidade
   }).then(() => {
+    setLoading(false)
     alert('Dados do produto atualizados com sucesso.')
     window.location.reload()
   })
@@ -30,6 +30,7 @@ async function updateProduto(){
   const [QTDP, setQTDP] = React.useState(quantidadeProduto)
   const [unidade, setUnidade] = React.useState(unidadeMedida)
   const [error, setError] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   const handleNome = (e) => {
     setNome(e.target.value)
@@ -97,7 +98,10 @@ async function updateProduto(){
             </button>
             {
               error && <p className={style.modal__p__error}>{error}</p>
-            }
+            }{
+              loading && 
+                <p className={style.modal__loading}>Enviando...</p> 
+              }
           </div>
         </div>
       </>
