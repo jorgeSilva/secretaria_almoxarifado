@@ -96,7 +96,10 @@ const Modal = ({data, modal, setModal}) => {
                   setLoading(false)
                   setError(error.response.data.error)
                 })
+          }else if(data && nome != data[i].nome){
+            setError('Produto não encontrado.')
           }
+          setLoading(false)
         }
       }).catch(e => console.log(e))
 

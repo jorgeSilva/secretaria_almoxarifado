@@ -88,9 +88,8 @@ const Modal = ({data}) => {
                     produto: data[i]._id,
                     secretaria: data[i].secretaria,
                     horario:  `${String(hora.getDate())}/${String(hora.getMonth()+1)}/${hora.getFullYear()}T${hora.getHours()}:${String(hora.getMinutes())}`
-                  }).then(({data}) => {
+                  }).then(() => {
                     setLoading(false)
-                    console.log(data);
                     alert('Solicitação enviada com sucesso.')
                     window.location.reload()
                   })
