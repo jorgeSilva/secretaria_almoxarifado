@@ -69,15 +69,15 @@ const GL = () => {
   const [modal, setModal] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
-    const lowerCase = search.toLocaleLowerCase()
-
-    if(produtos){
-      setDataSearch(produtos)
-      setValueCadPr(produtos.at(-1))
+    if(prodLict){
+      const lowerCase = search.toLocaleLowerCase()
+      
+      if(produtos){
+        setDataSearch(produtos)
+        setValueCadPr(produtos.at(-1))
+        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+      }
     }
-
-    return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-
   }, [produtos, search])
 
   const handleClickCadPr = () => {
@@ -287,6 +287,12 @@ const GL = () => {
                       <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
                       <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
                     </div>
+                    || 
+                    search && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Digite o nome e faça a busca</h2>
+                      <p className={style.body__subtitle}>Visualize todos os produtos que possuem cada letra informada.</p>
+                    </div>
                   }
                 
 
@@ -304,7 +310,9 @@ const GL = () => {
                         )) 
                         :  
                         <section className={style.body__nobody__list}>
-                          <h3>Ainda não existe produtos no almoxarifado.</h3>
+                          <h3>Selecione o botão</h3>
+                          <p>"Produtos no Almoxarifado"</p>
+                          <h3> Para a listagem dos produtos.</h3>
                         </section>
                     }
                     </section> 
