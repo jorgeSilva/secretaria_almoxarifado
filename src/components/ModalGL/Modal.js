@@ -81,21 +81,24 @@ const Modal = ({data, modal, setModal}) => {
       .then(({data}) => {
         for(let i = 0; i < data.length; i++){
           if(data && nome == data[i].nome){
-            api.post('/produto', {
-              nome,
-              quantidadeProduto: QTDP,
-              unidadeMedida: unidade,
-              secretaria: user.secretaria,
-              tempLicitacao: data[i]._id 
-            }).then(() => {
+            return (
+              api.post('/produto', {
+                nome,
+                quantidadeProduto: QTDP,
+                unidadeMedida: unidade,
+                secretaria: user.secretaria,
+                tempLicitacao: data[i]._id 
+              }).then(() => {
                 setLoading(false)
+                setError(false)
                 alert('Pedido cadastrado com sucesso.')
                 window.location.reload()
               })
-                .catch(error => {
-                  setLoading(false)
-                  setError(error.response.data.error)
-                })
+              .catch(error => {
+                setLoading(false)
+                setError(error.response.data.error)
+              })
+            )
           }else if(data && nome != data[i].nome){
             setError('Produto não encontrado.')
           }

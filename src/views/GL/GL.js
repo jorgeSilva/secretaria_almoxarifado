@@ -35,7 +35,10 @@ const GL = () => {
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
 
         await api.get(`/secretaria/produtos/${data.secretaria}`)
-        .then(({data}) => setProdutos(data))
+        .then(({data}) => {
+          setProdutos(data)
+          setValueCadPr(data.at(-1))
+        })
           .catch(e => console.log(e))
 
         await api.get(`/gl/secretaria/${data.secretaria}`)
@@ -74,7 +77,6 @@ const GL = () => {
       
       if(produtos){
         setDataSearch(produtos)
-        setValueCadPr(produtos.at(-1))
         return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
       }
     }
@@ -410,7 +412,7 @@ const GL = () => {
                           ))
                           :
                           <section className={style.body__nobody__list}>
-                            <h3>Não tem nenhuma solicitação pendente.</h3>
+                            <h3>Nenhuma solicitação pendente.</h3>
                           </section>
                       }
                     </section> 
