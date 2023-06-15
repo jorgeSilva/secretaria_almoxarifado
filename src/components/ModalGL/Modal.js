@@ -3,17 +3,32 @@ import style from './style.module.css'
 import { ReactComponent as SVGClose } from '../../assets/iconClose.svg'
 import api from '../../services/api'
 
-const Modal = ({modal, setModal}) => {
-   const url = document.URL.split("/").slice(-1)
+const Modal = ({data, modal, setModal}) => {
+  const url = document.URL.split("/").slice(-1)
   const [nome, setNome] = React.useState('')
   const [QTDP, setQTDP] = React.useState()
   const [unidade, setUnidade] = React.useState('')
   const [error, setError] = React.useState(false)
   const [user, setUser] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
- 
+  const [produto, setProduto] = React.useState(false)
+  const [filterProdutos, setFilterProdutos] = React.useState([])
+
   const handleNome = (e) => {
     setNome(e.target.value)
+    const search = e.target.value
+    if(produto){
+      const newFilter = produto.filter((value) => {
+        return value.nome.toLowerCase().includes(search.toLowerCase())
+        setUnidade(value.unidadeMedida)
+      })
+
+      if(search == ""){
+        setFilterProdutos([])
+      }else{
+        setFilterProdutos(newFilter)
+      }
+    }
   }
 
    const handleQTDP = (e) => {
@@ -27,6 +42,16 @@ const Modal = ({modal, setModal}) => {
   const handlePost = (e) => {
     e.preventDefault()
     Save()
+  }
+
+  async function getProdutos(){
+    setLoading(true)
+    await api.get(`/licitacao/produtos/${data}`)
+        .then(({data}) => {
+          setLoading(false)
+          setProduto(data)
+        })
+          .catch(e => console.log(e))
   }
 
   async function handleUser(){
@@ -84,6 +109,9 @@ const Modal = ({modal, setModal}) => {
 
   React.useEffect(() => {
     handleUser()
+    if(data){
+      getProdutos()
+    }
   }, [])
   
   return (
@@ -101,9 +129,22 @@ const Modal = ({modal, setModal}) => {
                 onChange={handleNome}
                 id={nome}
                 required
+                className={style.input_nome}
               />
 
               <label htmlFor={nome}>Nome Produto</label>
+              {
+                filterProdutos.length != 0 &&
+                <div className={style.card__modal__list__content}>
+                  {
+                    filterProdutos.map(item => 
+                      <p key={item._id}>
+                        {`${item.nome} ${item.quantidadeProduto} ${item.unidadeMedida} na licitação`}
+                      </p>
+                   )
+                  }
+                </div>
+              }
             </div>
 
             <div className={`${style.card__textbox} ${style.card__password}`}>

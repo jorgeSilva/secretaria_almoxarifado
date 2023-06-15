@@ -240,3 +240,40 @@
   border-radius: 5px;
   padding: 1rem;
 }
+
+.card__password :is(.input_nome:focus) ~ 
+  .card__modal__list__content{
+  display: block;
+}
+
+.card__modal__list__content{
+  background-color: var(--c3);
+  max-height: 200px;
+  width: 99.5%;
+  position: absolute;
+  z-index: 10;
+  margin-top: .2rem;
+  color: var(--c8);
+  font-size: 1rem;
+  font-weight: 700;
+  overflow-y: scroll;
+  display: none;
+}
+
+.card__modal__list__content p{
+  padding-bottom: 5px;
+  padding: 1rem 2rem;
+  margin: 0;
+  margin-bottom: .25rem;
+  border-bottom: 2px solid var(--c8);
+  transition: .2s ease;
+}
+
+.card__modal__list__content p:hover{
+  background-color: var(--c6);
+  color: var(--);
+}
+
+.card__content + input{
+  margin-top: 50px;
+}

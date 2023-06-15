@@ -59,8 +59,6 @@ const Modal = ({data}) => {
     save()
   }
 
-  console.log(nome);
-
   async function save() {
     if(!nome){
       return alert('Produto precisa ser nomeado.')

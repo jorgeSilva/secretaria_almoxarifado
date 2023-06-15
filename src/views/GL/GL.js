@@ -318,7 +318,7 @@ const GL = () => {
                             && 
                           <div className={style.body__modal__post} >
                             <div className={style.body__modal__container}>
-                              <ModalGL modal={modal} setModal={setModal}/>
+                              <ModalGL data={data.secretaria} modal={modal} setModal={setModal}/>
                             </div>
                           </div>
                         }
