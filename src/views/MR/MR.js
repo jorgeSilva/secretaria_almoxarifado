@@ -124,7 +124,17 @@ const MR = () => {
         </div>
         {
           loading ? 
-            <p className={style.body__loading}>Carregando...</p> 
+            <section className={style.body__loading}>
+              <div className={style.body__spinner}>
+                <div className={style.spinner}>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </section> 
             :
             <section className={style.body__container}>
               <section className={style.body__content}>
