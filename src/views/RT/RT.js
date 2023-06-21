@@ -6,6 +6,7 @@ import {ReactComponent as SvgPrancheta} from  '../../assets/Prancheta.svg'
 import {ReactComponent as SVGSearch} from  '../../assets/iconSearch.svg'
 import {ReactComponent as SVGAround} from  '../../assets/IconAround.svg'
 import {ReactComponent as SVGBox} from  '../../assets/IconBox.svg'
+import {ReactComponent as SVGExit} from  '../../assets/box-arrow-left.svg'
 import {ReactComponent as SVGEstatistica} from  '../../assets/iconEstatisticas.svg'
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
 import Card from '../../components/Card/Card'
@@ -13,9 +14,14 @@ import CardRT from '../../components/CardRT/Card'
 import ModalRT from '../../components/ModalRT/Modal'
 import CardSolicit from '../../components/CardSolicitSchool/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
+import { Context } from '../../context/authContext'
 
 const RT = () => {
   document.title = 'Merenda Escolar | Nutricionista'
+
+  const {
+    handleLogout
+  } = React.useContext(Context)
 
 /* ---------------- ESTADO BANCO DE DADOS -------------------- */
   const url = document.URL.split("/").slice(-1)
@@ -81,6 +87,7 @@ const RT = () => {
   const [escTrue, setEscTrue] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
   const [existShowSl, setExistShowSl] = React.useState(false)
+  const [exit, setExit] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
@@ -189,6 +196,15 @@ const RT = () => {
     }else{
       setExistShowSl(dataShowSolicitados)
     }
+  }
+
+  const handleExit = () => {
+    setCadPr('')
+    setProdLict('')
+    setProdutosLicitados('')
+    setProdLictEsc('')
+    setHistoLicit('')
+    setExit('active')
   }
 
   const handleModal = () => {
@@ -341,6 +357,23 @@ const RT = () => {
                     </button>
                   </div>
                 }
+
+                {
+                  exit && !cadPr && !prodLict && !produtosLicitados && !prodLictEsc && !histoLicit ? 
+                  <div className={style.body__options__content}>
+                    <SVGExit className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleExit}>
+                      Sair
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SVGExit className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleExit}>
+                      Sair
+                    </button>
+                  </div>
+                }
                 </section>
 
                 {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
@@ -378,6 +411,12 @@ const RT = () => {
                   <div className={style.body__container__title_subtitle}>
                     <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
                     <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
+                  </div>
+                  ||
+                  exit && 
+                  <div className={style.body__container__title_subtitle}>
+                    <h2 className={style.body__title}>Troque de conta</h2>
+                    <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
                   </div>
                   || 
                   search && 
@@ -562,6 +601,20 @@ const RT = () => {
                         </section>  
                       }
                     </section>  
+                  ||
+
+                  exit && 
+                  <>
+                    <section className={style.body__show__cards}>
+                      <button className={style.body__button_post} 
+                        onClick={handleLogout}>
+                          <p>
+                            Deixar esta conta
+                            <SVGExit className={style.body__options__svg}/>
+                          </p>
+                      </button>
+                    </section>
+                  </>
 
                   ||
 

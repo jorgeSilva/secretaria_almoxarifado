@@ -48,6 +48,8 @@ function AuthProvider({children}){
     setAuthenticated(false)
     localStorage.removeItem('token')
     api.defaults.headers.Authorization = undefined
+    alert("Você deixou esta conta")
+    window.location.reload()
   }
 
   React.useEffect(() => {
