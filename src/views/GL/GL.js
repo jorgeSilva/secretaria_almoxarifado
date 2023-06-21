@@ -310,7 +310,7 @@ const GL = () => {
                   {
                     cadPr && 
                     <div className={style.body__container__title_subtitle}>
-                      <h2 className={style.body__title}>Cadastrar Produtos no Almoxarifado</h2>
+                      <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
                       <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
                     </div>
                     ||

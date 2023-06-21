@@ -11,7 +11,7 @@ const Modal = ({modal, setModal}) => {
   const [error, setError] = React.useState(false)
   const [user, setUser] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
-
+  const [pushloading, setPushLoading] = React.useState(false)
  
   const handleNome = (e) => {
     setNome(e.target.value)
@@ -52,7 +52,7 @@ const Modal = ({modal, setModal}) => {
       alert('Precisa ser informado a unidade de medida.')
     }
 
-    setLoading(true)
+    setPushLoading(true)
     await api.post('/licitacao', {
       nome,
       quantidadeProduto: QTDP,
@@ -60,12 +60,12 @@ const Modal = ({modal, setModal}) => {
       quantidadeProdutoENV: 0,
       secretaria: user.secretaria
     }).then(() => {
-        setLoading(false)
+      setPushLoading(false)
         alert('Pedido cadastrado com sucesso.')
         window.location.reload()
       })
         .catch(error => {
-          setLoading(false)
+          setPushLoading(false)
           setError(error.response.data.error)
         })
   }
@@ -85,54 +85,68 @@ const Modal = ({modal, setModal}) => {
 
       <section className={style.modal__content}>
         <>
-        <div className={style.card__container}>
-          <div className={style.card__content}>
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={nome}
-                onChange={handleNome}
-                id={nome}
-                required
-              />
+          <div className={style.card__container}>
+          {
+            loading ? 
+            <section className={style.body__loading}>
+              <div className={style.body__spinner}>
+                <div className={style.spinner}>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </section>
+            :
+            <div className={style.card__content}>
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={nome}
+                  onChange={handleNome}
+                  id={nome}
+                  required
+                />
 
-              <label htmlFor={nome}>Nome Produto</label>
+                <label htmlFor={nome}>Nome Produto</label>
+              </div>
+
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={QTDP}
+                  onChange={handleQTDP}
+                  id={QTDP}
+                  required
+                />
+
+                <label htmlFor={QTDP}>Quantidade Produto</label>
+              </div>
+
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={unidade}
+                  onChange={handleUnidade}
+                  id={unidade}
+                  required
+                />
+
+                <label htmlFor={unidade}>Unidade de Medida</label>
+              </div>
+
+              <button onClick={handlePost} className={style.modal__button__save}>
+                CADASTRAR
+              </button>
+              {
+                error && <p className={style.modal__p__error}>{error}</p>
+              }{
+                pushloading && 
+                  <p className={style.modal__loading}>Enviando...</p> 
+                }
             </div>
-
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={QTDP}
-                onChange={handleQTDP}
-                id={QTDP}
-                required
-              />
-
-              <label htmlFor={QTDP}>Quantidade Produto</label>
-            </div>
-
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={unidade}
-                onChange={handleUnidade}
-                id={unidade}
-                required
-              />
-
-              <label htmlFor={unidade}>Unidade de Medida</label>
-            </div>
-
-            <button onClick={handlePost} className={style.modal__button__save}>
-              CADASTRAR
-            </button>
-            {
-              error && <p className={style.modal__p__error}>{error}</p>
-            }{
-              loading && 
-                <p className={style.modal__loading}>Enviando...</p> 
-              }
+          }
           </div>
-        </div>
-      </>
-
+        </>
         <button onClick={handleModal} className={style.modal__button_close}>
           <SVGClose/>
         </button>
