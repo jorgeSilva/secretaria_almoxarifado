@@ -13,6 +13,7 @@ const Modal = ({data, modal, setModal}) => {
   const [loading, setLoading] = React.useState(false)
   const [produto, setProduto] = React.useState(false)
   const [filterProdutos, setFilterProdutos] = React.useState([])
+  const [pushloading, setPushLoading] = React.useState(false)
 
   const handleNome = (e) => {
     setNome(e.target.value)
@@ -76,7 +77,7 @@ const Modal = ({data, modal, setModal}) => {
       return alert('Precisa ser informado a unidade de medida.')
     }
 
-    setLoading(true)
+    setPushLoading(true)
     await api.get(`/licitacao/produtos/${user.secretaria}`)
       .then((r) => {
         for(let i = 0; i < r.data.length; i++){
@@ -91,7 +92,7 @@ const Modal = ({data, modal, setModal}) => {
             })
 
             try{
-              setLoading(false)
+              setPushLoading(false)
               api.put(`/licitacao/produtoENV/${r.data[i]._id}`, {
                 quantidadeProdutoENV: (r.data[i].quantidadeProduto - QTDP)
               })
@@ -123,11 +124,9 @@ const Modal = ({data, modal, setModal}) => {
           }else if(data && nome != data[i].nome){
             setError('Produto não encontrado.')
           }
-          setLoading(false)
+          setPushLoading(false)
         }
       }).catch(e => console.log(e))
-
-    /*  */
   }
 
   const handleModal = () => {
@@ -149,63 +148,78 @@ const Modal = ({data, modal, setModal}) => {
       <section className={style.modal__content}>
         <>
         <div className={style.card__container}>
-          <div className={style.card__content}>
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={nome}
-                onChange={handleNome}
-                id={nome}
-                required
-                className={style.input_nome}
-              />
-
-              <label htmlFor={nome}>Nome Produto</label>
-              {
-                filterProdutos.length != 0 &&
-                <div className={style.card__modal__list__content}>
-                  {
-                    filterProdutos.map(item => 
-                      <p key={item._id}>
-                        {`${item.nome} ${item.quantidadeProduto} ${item.unidadeMedida} na licitação`}
-                      </p>
-                   )
-                  }
+          {
+            loading ? 
+            <section className={style.body__loading}>
+              <div className={style.body__spinner}>
+                <div className={style.spinner}>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
                 </div>
-              }
+              </div>
+            </section>
+            :
+            <div className={style.card__content}>
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={nome}
+                  onChange={handleNome}
+                  id={nome}
+                  required
+                  className={style.input_nome}
+                />
+
+                <label htmlFor={nome}>Nome Produto</label>
+                {
+                  filterProdutos.length != 0 &&
+                  <div className={style.card__modal__list__content}>
+                    {
+                      filterProdutos.map(item => 
+                        <p key={item._id}>
+                          {`${item.nome} ${item.quantidadeProduto} ${item.unidadeMedida} na licitação`}
+                        </p>
+                    )
+                    }
+                  </div>
+                }
+              </div>
+
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={QTDP}
+                  onChange={handleQTDP}
+                  id={QTDP}
+                  required
+                />
+
+                <label htmlFor={QTDP}>Quantidade Produto</label>
+              </div>
+
+              <div className={`${style.card__textbox} ${style.card__password}`}>
+                <input
+                  value={unidade}
+                  onChange={handleUnidade}
+                  id={unidade}
+                  required
+                />
+
+                <label htmlFor={unidade}>Unidade de Medida</label>
+              </div>
+
+              <button onClick={handlePost} className={style.modal__button__save}>
+                CADASTRAR
+              </button>
+              {
+                error && <p className={style.modal__p__error}>{error}</p>
+              }{
+                pushloading && 
+                  <p className={style.modal__loading}>Enviando...</p> 
+                }
             </div>
-
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={QTDP}
-                onChange={handleQTDP}
-                id={QTDP}
-                required
-              />
-
-              <label htmlFor={QTDP}>Quantidade Produto</label>
-            </div>
-
-            <div className={`${style.card__textbox} ${style.card__password}`}>
-              <input
-                value={unidade}
-                onChange={handleUnidade}
-                id={unidade}
-                required
-              />
-
-              <label htmlFor={unidade}>Unidade de Medida</label>
-            </div>
-
-            <button onClick={handlePost} className={style.modal__button__save}>
-              CADASTRAR
-            </button>
-            {
-              error && <p className={style.modal__p__error}>{error}</p>
-            }{
-              loading && 
-                <p className={style.modal__loading}>Enviando...</p> 
-              }
-          </div>
+          }
         </div>
       </>
 
