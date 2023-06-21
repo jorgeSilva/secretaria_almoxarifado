@@ -80,6 +80,7 @@ const RT = () => {
   const [produtosLicitados, setProdutosLicitados] = React.useState('')
   const [prodLictEsc, setProdLictEsc] = React.useState('')
   const [histoLicit, setHistoLicit] = React.useState('')
+  const [exit, setExit] = React.useState('')
   const [modal, setModal] = React.useState(false)
   const date = new Date()
   const [search, setSearch] = React.useState('')
@@ -87,7 +88,6 @@ const RT = () => {
   const [escTrue, setEscTrue] = React.useState(false)
   const [produtosTrue, setProdutosTrue] = React.useState(false)
   const [existShowSl, setExistShowSl] = React.useState(false)
-  const [exit, setExit] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {

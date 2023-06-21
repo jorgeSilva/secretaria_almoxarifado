@@ -7,11 +7,13 @@ import {ReactComponent as SVGSearch} from  '../../assets/iconSearch.svg'
 import {ReactComponent as SVGBox} from  '../../assets/IconBox.svg'
 import {ReactComponent as SVGEstatistica} from  '../../assets/iconEstatisticas.svg'
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
+import {ReactComponent as SVGExit} from  '../../assets/box-arrow-left.svg'
 import Card from '../../components/Card/Card'
 import CardSolicit from '../../components/CardSolicitGL/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
 import {ReactComponent as SvgPrancheta} from  '../../assets/Prancheta.svg'
 import ModalGL from '../../components/ModalGL/Modal'
+import { Context } from '../../context/authContext'
 
 const GL = () => {
   document.title = 'Merenda Escolar | Gerente Logistica'
@@ -55,6 +57,10 @@ const GL = () => {
     }
   }
 
+  const {
+    handleLogout
+  } = React.useContext(Context)
+
 /* -----------------ESTADOS FRONT-END ------------------------  */
 
   const [name, setName] = React.useState('')
@@ -63,6 +69,7 @@ const GL = () => {
   const [prodLict, setProdLict] = React.useState('')
   const [prodLictEsc, setProdLictEsc] = React.useState('')
   const [histoLicit, setHistoLicit] = React.useState('')
+  const [exit, setExit] = React.useState('')
   const date = new Date()
   const [search, setSearch] = React.useState('')
   const [dataSearch, setDataSearch] = React.useState([])
@@ -131,6 +138,14 @@ const GL = () => {
     }else{
       setExistShowSl(dataShowSolicitados)
     }
+  }
+
+  const handleExit = () => {
+    setCadPr('')
+    setProdLict('')
+    setProdLictEsc('')
+    setHistoLicit('')
+    setExit('active')
   }
 
   const handleModal = () => {
@@ -271,6 +286,23 @@ const GL = () => {
                       </button>
                     </div>
                   }
+
+                  {
+                    exit && !cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                    <div className={style.body__options__content}>
+                      <SVGExit className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleExit}>
+                        Sair
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGExit className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleExit}>
+                        Sair
+                      </button>
+                    </div>
+                  }
                   </section>
 
                   {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
@@ -298,6 +330,12 @@ const GL = () => {
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
                       <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
+                    </div>
+                    ||
+                    exit && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Troque de conta</h2>
+                      <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
                     </div>
                     || 
                     search && 
@@ -455,6 +493,20 @@ const GL = () => {
                           </section>  
                         }
                       </section>  
+                  ||
+
+                  exit && 
+                  <>
+                    <section className={style.body__show__cards}>
+                      <button className={style.body__button_post} 
+                        onClick={handleLogout}>
+                          <p>
+                            Deixar esta conta
+                            <SVGExit className={style.body__options__svg}/>
+                          </p>
+                      </button>
+                    </section>
+                  </>
 
                   ||
 
