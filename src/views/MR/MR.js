@@ -6,9 +6,11 @@ import {ReactComponent as SvgPrancheta} from  '../../assets/Prancheta.svg'
 import {ReactComponent as SVGSearch} from  '../../assets/iconSearch.svg'
 import {ReactComponent as SVGRotate} from  '../../assets/IconAround.svg'
 import {ReactComponent as SVGIconeOption} from  '../../assets/undraw_check_boxes_re_v40f (1).svg'
+import {ReactComponent as SVGExit} from  '../../assets/box-arrow-left.svg'
 import CardModal from '../../components/ModalMR/Modal'
 import Card from '../../components/Card/Card'
 import CardSolicit from '../../components/CardSolicitMR/CardSolicit'
+import { Context } from '../../context/authContext'
 
 const MR = () => {
 
@@ -66,12 +68,18 @@ const MR = () => {
       }
   }
 
+  const {
+    handleLogout
+  } = React.useContext(Context)
+
+
   /* -----------------ESTADOS FRONT-END ------------------------  */
   const date = new Date()
   const [solicitar, setSolicitar] = React.useState('')
   const [active, setActive] = React.useState(false)
   const [atualizar, setAtualizar] = React.useState('')
   const [valuesolicitar, setValuesolicitar] = React.useState('')
+  const [exit, setExit] = React.useState('')
   const [search, setSearch] = React.useState('')
   const [dataSearch, setDataSearch] = React.useState([])
 
@@ -103,6 +111,12 @@ const MR = () => {
     }else{
       setAttRecem(produtos)
     }
+  }
+
+  const handleExit = () => {
+    setSolicitar('')
+    setAtualizar('')
+    setExit('active')
   }
 
   React.useEffect(() => {
@@ -201,6 +215,22 @@ const MR = () => {
                       </button>
                     </div>
                   }
+                  {
+                    exit && !atualizar && !solicitar ? 
+                    <div className={style.body__options__content}>
+                      <SVGExit className={style.body__options__svg_active}/>
+                      <button className={style.body__options__button_active} onClick={handleExit}>
+                        Sair
+                      </button> 
+                    </div>
+                      : 
+                    <div className={style.body__options__content}>
+                      <SVGExit className={style.body__options__svg}/>
+                      <button className={style.body__options__button} onClick={handleExit}>
+                        Sair
+                      </button>
+                    </div>
+                  }
                 </section>
 
                 {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
@@ -216,6 +246,12 @@ const MR = () => {
                   <div className={style.body__container__title_subtitle}>
                     <h2 className={style.body__title}>Atualizar Produtos Recém Chegados</h2>
                     <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
+                  </div>
+                  ||
+                  exit && 
+                  <div className={style.body__container__title_subtitle}>
+                    <h2 className={style.body__title}>Troque de conta</h2>
+                    <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
                   </div>
                 }
                 
@@ -304,6 +340,21 @@ const MR = () => {
                           
                       }
                     </section>
+                  
+                  ||
+
+                  exit && 
+                  <>
+                    <section className={style.body__show__cards}>
+                      <button className={style.body__button_post} 
+                        onClick={handleLogout}>
+                          <p>
+                            Deixar esta conta
+                            <SVGExit className={style.body__options__svg}/>
+                          </p>
+                      </button>
+                    </section>
+                  </>
 
                   ||
 
