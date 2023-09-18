@@ -176,7 +176,7 @@ const Modal = ({data}) => {
             </div>
 
             <button onClick={handleSubmit} className={style.modal__button__save}>
-              SOLICITAR
+              Solicitar
             </button>
 
             {

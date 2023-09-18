@@ -210,7 +210,7 @@ const Modal = ({data, modal, setModal}) => {
               </div>
 
               <button onClick={handlePost} className={style.modal__button__save}>
-                CADASTRAR
+                Cadastrar
               </button>
               {
                 error && <p className={style.modal__p__error}>{error}</p>

@@ -118,24 +118,6 @@
   padding: 18px;
 }
 
-@media (max-width: 543px) {
-  .modal__title{
-    font-size: 3rem;
-  } 
-
-  .modal__content{
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-end;
-  }
-
-  .modal__button_close{
-    display: flex;
-  }
-}
-
-
-
 .modal__button_close svg{
   fill: var(--c0);
 }
@@ -172,7 +154,7 @@
   justify-content: center;
   margin-bottom: 20px;
   border-radius: 20px;
-  padding: 2rem 3rem;
+  padding: 2rem 2rem;
   box-shadow: rgba(190, 19, 19, 0.267) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   transition: .1s;
   min-width: 400px;
@@ -186,10 +168,9 @@
 }
 
 .card__content{
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1px;
 }
 
 .card__textbox{
@@ -226,29 +207,6 @@
   font-weight: 600;
   font-family: 'Red Hat Display';
   display: block;
-}
-
-@media (max-width: 466px) {
-  .modal__content{
-    padding: 1rem 1rem 0 7rem;
-  }
-
-  .modal__title{
-    font-size: 2.5rem;
-    margin-top: 2rem;
-  } 
-
-  .card__container{
-    width: 100%;
-  }
-
-  .card__textbox input{
-    font-size: 1.3rem;
-  }
-  
-  .card__textbox label {
-    font-size: 1rem;
-  }
 }
 
 .card__textbox input:focus{
@@ -313,4 +271,64 @@
   margin-top: 2rem;
   border-radius: 5px;
   padding: 1rem;
+}
+
+
+@media (max-width: 603px) {
+
+  .modal__container{
+    width: 100%;
+    padding: 20px;
+  }
+
+  .modal__content{
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .card__container{
+    max-width: 100%;
+    min-height: 350px;
+  }
+
+  .modal__title{
+    font-size: 3rem;
+    line-height: 3.5rem;
+  } 
+
+  .modal__content{
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
+  .modal__button_close{
+    display: flex;
+  }
+
+  .card__textbox label {
+    left: 1rem;
+  }
+}
+
+@media (max-width: 545px) {
+  .card__container{
+    min-width: 100px;
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 466px) {
+  .modal__title{
+    font-size: 2.5rem;
+    margin-top: 2rem;
+  } 
+
+  .card__textbox input{
+    font-size: 1.3rem;
+  }
+  
+  .card__textbox label {
+    font-size: 1rem;
+  }
 }
