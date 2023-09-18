@@ -37,7 +37,7 @@
     border: none;
     border-bottom: 1px solid var(--c11);
     width: 100%;
-    padding-left: 0px;
+    box-sizing: border-box;
   }
 }
 

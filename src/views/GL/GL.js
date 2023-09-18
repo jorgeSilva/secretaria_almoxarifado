@@ -241,14 +241,14 @@ const GL = () => {
                     <div className={style.body__options__content}>
                       <SVGBox className={style.body__options__svg_active}/>
                       <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                        Produtos no Almoxarifado
+                        Produtos no almoxarifado
                       </button> 
                     </div>
                       : 
                     <div className={style.body__options__content}>
                       <SVGBox className={style.body__options__svg}/>
                       <button className={style.body__options__button} onClick={handleClickProdLict}>
-                        Produtos no Almoxarifado
+                        Produtos no almoxarifado
                       </button>
                     </div>
                   }
@@ -310,13 +310,13 @@ const GL = () => {
                   {
                     cadPr && 
                     <div className={style.body__container__title_subtitle}>
-                      <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
+                      <h2 className={style.body__title}>Cadastrar produtos no almoxarifado</h2>
                       <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
                     </div>
                     ||
                     prodLict && 
                     <div className={style.body__container__title_subtitle}>
-                      <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
+                      <h2 className={style.body__title}>Produtos no almoxarifado</h2>
                       <p className={style.body__subtitle}>Role a página para ver os produtos no almoxarifado, ou pesquise no campo de busca acima.</p>
                     </div>
                     || 
@@ -361,7 +361,7 @@ const GL = () => {
                         :  
                         <section className={style.body__nobody__list}>
                           <h3>Selecione o botão</h3>
-                          <p>"Produtos no Almoxarifado"</p>
+                          <p>"Produtos no almoxarifado"</p>
                           <h3> Para a listagem dos produtos.</h3>
                         </section>
                     }
@@ -385,7 +385,7 @@ const GL = () => {
                           <button className={style.body__button_post} 
                             onClick={handleModal}>
                               <p>
-                                Adicionar Produto
+                                Adicionar produto
 
                                 <SvgPrancheta className={style.body__options__svg}/>
                               </p>
