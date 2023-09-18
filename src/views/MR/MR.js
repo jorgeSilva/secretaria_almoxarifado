@@ -238,13 +238,13 @@ const MR = () => {
                 {
                   solicitar && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Solicitar Produtos</h2>
-                    <p className={style.body__subtitle}>Clique em "Solicitar Produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
+                    <h2 className={style.body__title}>Solicitar produtos</h2>
+                    <p className={style.body__subtitle}>Clique em "Solicitar produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
                   </div>
                     ||
                   atualizar && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Atualizar Produtos Recém Chegados</h2>
+                    <h2 className={style.body__title}>Atualizar produtos recém chegados</h2>
                     <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
                   </div>
                   ||
@@ -289,7 +289,7 @@ const MR = () => {
                         <button className={style.body__button_post} 
                           onClick={() => setActive(!active)}>
                           <p>
-                            Solicitar Produto
+                            Solicitar produto
 
                             <SvgPrancheta className={style.body__options__svg}/>
                           </p>
