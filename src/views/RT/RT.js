@@ -295,14 +295,14 @@ const RT = () => {
                   <div className={style.body__options__content}>
                     <SVGBox className={style.body__options__svg_active}/>
                     <button className={style.body__options__button_active} onClick={handleClickProdutosLicit}>
-                      Produtos da Licitação
+                      Produtos da licitação
                     </button> 
                   </div>
                     : 
                   <div className={style.body__options__content}>
                     <SVGBox className={style.body__options__svg}/>
                     <button className={style.body__options__button} onClick={handleClickProdutosLicit}>
-                      Produtos da Licitação
+                      Produtos da licitação
                     </button>
                   </div>
                 }
@@ -312,14 +312,14 @@ const RT = () => {
                   <div className={style.body__options__content}>
                     <SVGBox className={style.body__options__svg_active}/>
                     <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                      Produtos no Almoxarifado
+                      Produtos no almoxarifado
                     </button> 
                   </div>
                     : 
                   <div className={style.body__options__content}>
                     <SVGBox className={style.body__options__svg}/>
                     <button className={style.body__options__button} onClick={handleClickProdLict}>
-                      Produtos no Almoxarifado
+                      Produtos no almoxarifado
                     </button>
                   </div>
                 }
@@ -381,13 +381,13 @@ const RT = () => {
                 {
                   cadPr && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Cadastrar Produtos</h2>
+                    <h2 className={style.body__title}>Cadastrar produtos</h2>
                     <p className={style.body__subtitle}>Cadastre os produtos que façam parte da licitação deste ano.</p>
                   </div>
                   ||
                   prodLict && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos no Almoxarifado</h2>
+                    <h2 className={style.body__title}>Produtos no almoxarifado</h2>
                     <p className={style.body__subtitle}>
                       Se deseja editar ou excluir um produto do almoxarifado, aperte no card e selecione "Editar" ou "Exlcuir".
                     </p>
@@ -395,7 +395,7 @@ const RT = () => {
                   || 
                   produtosLicitados && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos da Licitação</h2>
+                    <h2 className={style.body__title}>Produtos da licitação</h2>
                     <p className={style.body__subtitle}>
                       Visualize os produtos da licitação que foram cadastrados.
                     </p>
@@ -403,7 +403,7 @@ const RT = () => {
                   || 
                   prodLictEsc && 
                   <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos Solicitados por Escolas</h2>
+                    <h2 className={style.body__title}>Produtos solicitados por escolas</h2>
                     <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Acionar Gerente de Logistica".</p>
                   </div>
                   || 
@@ -443,8 +443,8 @@ const RT = () => {
                       :  
                       <section className={style.body__nobody__list}>
                         <h3>Selecione o botão</h3>
-                        <p>"Produtos no Almoxarifado"</p>
-                        <p>"Produtos da Licitação"</p> 
+                        <p>"Produtos no almoxarifado"</p>
+                        <p>"Produtos da licitação"</p> 
                         {/* <p>"Produtos Solicitados"</p> 
                         <p>"Historico de Solicitações" </p> */}
                         <h3> Para a listagem dos produtos.</h3>
@@ -470,7 +470,7 @@ const RT = () => {
                         <button className={style.body__button_post} 
                           onClick={handleModal}>
                             <p>
-                              Adicionar Produto
+                              Adicionar produto
 
                               <SvgPrancheta className={style.body__options__svg}/>
                             </p>
