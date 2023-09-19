@@ -223,7 +223,6 @@
 
 .card__modal__list__content p:hover{
   background-color: var(--c6);
-  color: var(--);
 }
 
 .card__content + input{
