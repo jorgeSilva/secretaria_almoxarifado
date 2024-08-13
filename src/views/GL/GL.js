@@ -25,7 +25,38 @@ const GL = () => {
   const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
 
-  async function getUser(){
+  const getSecretariaProdutos = React.useCallback(async (id) => {
+    try{
+      const {data} = await api.get(`/secretaria/produtos/${id}`)
+
+      setProdutos(data)
+      setValueCadPr(data.at(-1))
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getSecretariaSolicitados = React.useCallback(async (id) => {
+    try{
+      const {data} = await api.get(`/gl/secretaria/${id}`)
+
+      setSolicitados(data)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getDataShowSolicitado = React.useCallback(async (id) => {
+    try{
+      const {data} = await api.get(`/rt/secretaria/${id}`)
+
+      setDataShowSolicitados(data)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getUser = React.useCallback(async () => {
     setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
@@ -35,27 +66,15 @@ const GL = () => {
       if(data){
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
-
-        await api.get(`/secretaria/produtos/${data.secretaria}`)
-        .then(({data}) => {
-          setProdutos(data)
-          setValueCadPr(data.at(-1))
-        })
-          .catch(e => console.log(e))
-
-        await api.get(`/gl/secretaria/${data.secretaria}`)
-        .then(({data}) => setSolicitados(data))
-          .catch(error => console.log(error))
-
-        await api.get(`/rt/secretaria/${data.secretaria}`)
-        .then(({data}) => setDataShowSolicitados(data))
-          .catch(e => console.log(e))
+        getSecretariaProdutos(data.secretaria)
+        getSecretariaSolicitados(data.secretaria)
+        getDataShowSolicitado(data.secretaria)
       }
       setLoading(false)
     }catch(error){
-      console.log(error);
+      setLoading(false)
     }
-  }
+  }, [getDataShowSolicitado, getSecretariaProdutos, getSecretariaSolicitados])
 
   const {
     handleLogout
@@ -79,15 +98,16 @@ const GL = () => {
   const [modal, setModal] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
-    if(prodLict){
       const lowerCase = search.toLocaleLowerCase()
-      
-      if(produtos){
-        setDataSearch(produtos)
-        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-      }
+      return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+  }, [search, dataSearch])
+
+  React.useEffect(() => {
+
+    if(produtos){
+      setDataSearch(produtos)
     }
-  }, [produtos, search])
+  }, [produtos])
 
   const handleClickCadPr = () => {
     setCadPr('active')
@@ -102,7 +122,7 @@ const GL = () => {
     setProdLictEsc('')
     setHistoLicit('')
 
-    if(produtos == false){
+    if(produtos === false){
       setProdutosTrue(false)
     }else{
       setProdutosTrue(produtos)
@@ -120,7 +140,7 @@ const GL = () => {
     setProdLictEsc('active')
     setHistoLicit('')
 
-    if(solicitados == false){
+    if(solicitados === false){
       setEnvioEsc(false)
     }else{
       setEnvioEsc(solicitados)
@@ -133,7 +153,7 @@ const GL = () => {
     setProdLictEsc('')
     setHistoLicit('active')
 
-    if(dataShowSolicitados == false){
+    if(dataShowSolicitados === false){
       setExistShowSl(false)
     }else{
       setExistShowSl(dataShowSolicitados)
@@ -157,196 +177,208 @@ const GL = () => {
       window.location.href = '/'
     }
     getUser()
-  }, [])
-
-  React.useEffect(() => {
-    if(!isConnected){
-      window.location.href = '/'
-    }
-  }, )
+  }, [getUser])
 
   return (
-    <>
-      <section className={style.body__login}>
-        <div className={style.body_background}>
-          <div className={style.body__background_one}></div>
-          <div className={style.body__background_two}></div>
-          <div className={style.body__background_tree}></div>
-        </div>
-        {
-          loading ? 
-            <section className={style.body__loading}>
-              <div className={style.body__spinner}>
-                <div className={style.spinner}>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
+    <section className={style.body__login}>
+      <div className={style.body_background}>
+        <div className={style.body__background_one}></div>
+        <div className={style.body__background_two}></div>
+        <div className={style.body__background_tree}></div>
+      </div>
+      {
+        loading ? 
+          <section className={style.body__loading}>
+            <div className={style.body__spinner}>
+              <div className={style.spinner}>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
-            </section>
-            :
-            <section className={style.body__container}>
-                <section className={style.body__content}>
-                  <header className={style.body__header}>
-                    <div className={style.body__header__child}>
-                      {
+            </div>
+          </section>
+          :
+          <section className={style.body__container}>
+              <section className={style.body__content}>
+                <header className={style.body__header}>
+                  <div className={style.body__header__child}>
+                    {
+                      (
                         date.getHours() < 12 ? 
                         <h1> Bom dia {name}.</h1> : ''
-                        || 
+                      )
+                      || 
+                      (
                         date.getHours() >= 12 && date.getHours() < 18 ? 
                         <h1>Boa tarde {name}.</h1> : ''
-                        ||
+                      )
+                      ||
+                      (
                         date.getHours() >= 18 ? 
                         <h1>Boa noite {name}.</h1> : ''
-                      }
+                      )
+                    }
 
-                      <div className={style.body__container_search}>
-                        <input 
-                          value={search}
-                          id='search'
-                          onChange={({target}) => setSearch(target.value)}
-                          placeholder='Procure um produto pelo nome.' 
-                          className={style.body__search}/>
-                        
-                        <label htmlFor='search'>
-                          <SVGSearch/>
-                        </label>
-                      </div>
+                    <div className={style.body__container_search}>
+                      <input 
+                        value={search}
+                        id='search'
+                        onChange={({target}) => setSearch(target.value)}
+                        placeholder='Procure um produto pelo nome.' 
+                        className={style.body__search}/>
+                      
+                      <label htmlFor='search'>
+                        <SVGSearch/>
+                      </label>
                     </div>
-                  </header>
+                  </div>
+                </header>
 
-                  {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
+                {/* ------------ BOTOES PARA EXIBIR FUNÇÕES ABAIXO --------------- */}
 
-                  <section className={style.body__options}>
-                  {
-                    cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
-                    <div className={style.body__options__content}>
-                      <SvgPrancheta className={style.body__options__svg_active}/>
-                      <button className={style.body__options__button_active} onClick={handleClickCadPr}>
-                        Cadastrar produtos no almoxarifado
-                      </button> 
-                    </div>
-                      : 
-                    <div className={style.body__options__content}>
-                      <SvgPrancheta className={style.body__options__svg}/>
-                      <button className={style.body__options__button} onClick={handleClickCadPr}>
-                        Cadastrar produtos no almoxarifado
-                      </button>
-                    </div>
-                  }
-                  {
-                    prodLict &&  !cadPr && !prodLictEsc && !histoLicit? 
-                    <div className={style.body__options__content}>
-                      <SVGBox className={style.body__options__svg_active}/>
-                      <button className={style.body__options__button_active} onClick={handleClickProdLict}>
-                        Produtos no almoxarifado
-                      </button> 
-                    </div>
-                      : 
-                    <div className={style.body__options__content}>
-                      <SVGBox className={style.body__options__svg}/>
-                      <button className={style.body__options__button} onClick={handleClickProdLict}>
-                        Produtos no almoxarifado
-                      </button>
-                    </div>
-                  }
+                <section className={style.body__options}>
+                {
+                  cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                  <div className={style.body__options__content}>
+                    <SvgPrancheta className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleClickCadPr}>
+                      Cadastrar produtos no almoxarifado
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SvgPrancheta className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleClickCadPr}>
+                      Cadastrar produtos no almoxarifado
+                    </button>
+                  </div>
+                }
+                {
+                  prodLict &&  !cadPr && !prodLictEsc && !histoLicit? 
+                  <div className={style.body__options__content}>
+                    <SVGBox className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleClickProdLict}>
+                      Produtos no almoxarifado
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SVGBox className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleClickProdLict}>
+                      Produtos no almoxarifado
+                    </button>
+                  </div>
+                }
 
-                  {
-                    prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
-                    <div className={style.body__options__content}>
-                      <SVGChecked className={style.body__options__svg_active}/>
-                      <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
-                        Enviar para escolas
-                      </button> 
-                    </div>
-                      : 
-                    <div className={style.body__options__content}>
-                      <SVGChecked className={style.body__options__svg}/>
-                      <button className={style.body__options__button} onClick={handleClickProdLictEsc}>
+                {
+                  prodLictEsc && !cadPr && !prodLict && !histoLicit ? 
+                  <div className={style.body__options__content}>
+                    <SVGChecked className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleClickProdLictEsc}>
                       Enviar para escolas
-                      </button>
-                    </div>
-                  }
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SVGChecked className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleClickProdLictEsc}>
+                    Enviar para escolas
+                    </button>
+                  </div>
+                }
 
-                  {
-                    histoLicit  && !cadPr && !prodLict && !prodLictEsc ? 
-                    <div className={style.body__options__content}>
-                      <SVGEstatistica className={style.body__options__svg_active}/>
-                      <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
-                        Historico de solicitação
-                      </button> 
-                    </div>
-                      : 
-                    <div className={style.body__options__content}>
-                      <SVGEstatistica className={style.body__options__svg}/>
-                      <button className={style.body__options__button} onClick={handleClickhistoLicit}>
-                        Historico de solicitação
-                      </button>
-                    </div>
-                  }
+                {
+                  histoLicit  && !cadPr && !prodLict && !prodLictEsc ? 
+                  <div className={style.body__options__content}>
+                    <SVGEstatistica className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleClickhistoLicit}>
+                      Historico de solicitação
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SVGEstatistica className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleClickhistoLicit}>
+                      Historico de solicitação
+                    </button>
+                  </div>
+                }
 
-                  {
-                    exit && !cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
-                    <div className={style.body__options__content}>
-                      <SVGExit className={style.body__options__svg_active}/>
-                      <button className={style.body__options__button_active} onClick={handleExit}>
-                        Sair
-                      </button> 
-                    </div>
-                      : 
-                    <div className={style.body__options__content}>
-                      <SVGExit className={style.body__options__svg}/>
-                      <button className={style.body__options__button} onClick={handleExit}>
-                        Sair
-                      </button>
-                    </div>
-                  }
-                  </section>
+                {
+                  exit && !cadPr && !prodLict && !prodLictEsc && !histoLicit ? 
+                  <div className={style.body__options__content}>
+                    <SVGExit className={style.body__options__svg_active}/>
+                    <button className={style.body__options__button_active} onClick={handleExit}>
+                      Sair
+                    </button> 
+                  </div>
+                    : 
+                  <div className={style.body__options__content}>
+                    <SVGExit className={style.body__options__svg}/>
+                    <button className={style.body__options__button} onClick={handleExit}>
+                      Sair
+                    </button>
+                  </div>
+                }
+                </section>
 
-                  {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
+                {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
-                  {
+                {
+                  (
                     cadPr && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Cadastrar produtos no almoxarifado</h2>
                       <p className={style.body__subtitle}>Cadastre os produtos que fazem parte da licitação deste ano.</p>
                     </div>
-                    ||
+                  )
+                  ||
+                  (
                     prodLict && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Produtos no almoxarifado</h2>
                       <p className={style.body__subtitle}>Role a página para ver os produtos no almoxarifado, ou pesquise no campo de busca acima.</p>
                     </div>
-                    || 
+                  )
+                  ||
+                  (
                     prodLictEsc && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Enviar às escolas</h2>
                       <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Enviar para escola".</p>
                     </div>
-                    || 
+                  )
+                  ||
+                  (
                     histoLicit && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
                       <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
                     </div>
-                    ||
+                  )
+                  ||
+                  (
                     exit && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Troque de conta</h2>
                       <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
                     </div>
-                    || 
+                  )
+                  ||
+                  (
                     search && 
                     <div className={style.body__container__title_subtitle}>
                       <h2 className={style.body__title}>Digite o nome e faça a busca</h2>
                       <p className={style.body__subtitle}>Visualize todos os produtos que possuem cada letra informada.</p>
                     </div>
-                  }
-                
+                  )
+                }
+              
 
-                  {
+                {
+                  (
                     search &&
                     <section className={style.body__show__cards}>
                     {
@@ -366,77 +398,77 @@ const GL = () => {
                         </section>
                     }
                     </section> 
-
-                    ||
-
+                  )
+                  ||
+                  (
                     cadPr && 
-                      <>
-                        {
-                          modal 
-                            && 
-                          <div className={style.body__modal__post} >
-                            <div className={style.body__modal__container}>
-                              <ModalGL data={data.secretaria} modal={modal} setModal={setModal}/>
-                            </div>
+                    <>
+                      {
+                        modal 
+                          && 
+                        <div className={style.body__modal__post} >
+                          <div className={style.body__modal__container}>
+                            <ModalGL data={data.secretaria} modal={modal} setModal={setModal}/>
                           </div>
-                        }
-                        
-                        <section className={style.body__show__cards}>
-                          <button className={style.body__button_post} 
-                            onClick={handleModal}>
-                              <p>
-                                Adicionar produto
-
-                                <SvgPrancheta className={style.body__options__svg}/>
-                              </p>
-                          </button>
-
-                          {
-                            valueCadPr ?
-                            <>
-                              <h3 className={style.body__text__card}>
-                                Ultimo produto cadastrado.
-                              </h3>
-
-                              <Card 
-                              nome={valueCadPr.nome} key={valueCadPr._id}
-                              quantidadeProduto={valueCadPr.quantidadeProduto}
-                              unidadeMedida={valueCadPr.unidadeMedida}
-                              />
-                            </>
-                            :
-                            <section className={style.body__nobody__list}>
-                              <h3>
-                                Nenhum produto cadastrado
-                              </h3>
-                            </section>
-                          }
-                        </section>
-                      </>
-
-                    ||
-
-                    prodLict && 
+                        </div>
+                      }
+                      
                       <section className={style.body__show__cards}>
+                        <button className={style.body__button_post} 
+                          onClick={handleModal}>
+                            <p>
+                              Adicionar produto
+
+                              <SvgPrancheta className={style.body__options__svg}/>
+                            </p>
+                        </button>
+
                         {
-                          produtosTrue ?
-                            produtosTrue.map((item) => (
-                              <Card 
-                              _id={item._id}
-                              nome={item.nome} key={item._id}
-                              quantidadeProduto={item.quantidadeProduto}
-                              unidadeMedida={item.unidadeMedida}
-                              />
-                            )) 
-                            :  
-                            <section className={style.body__nobody__list}>
-                              <h3>Ainda não existe produtos no almoxarifado.</h3>
-                            </section>
+                          valueCadPr ?
+                          <>
+                            <h3 className={style.body__text__card}>
+                              Ultimo produto cadastrado.
+                            </h3>
+
+                            <Card 
+                            nome={valueCadPr.nome} key={valueCadPr._id}
+                            quantidadeProduto={valueCadPr.quantidadeProduto}
+                            unidadeMedida={valueCadPr.unidadeMedida}
+                            />
+                          </>
+                          :
+                          <section className={style.body__nobody__list}>
+                            <h3>
+                              Nenhum produto cadastrado
+                            </h3>
+                          </section>
                         }
-                      </section> 
-
-                    ||
-
+                      </section>
+                    </>
+                  )
+                  ||
+                  (
+                    prodLict && 
+                    <section className={style.body__show__cards}>
+                      {
+                        produtosTrue ?
+                          produtosTrue.map((item) => (
+                            <Card 
+                            _id={item._id}
+                            nome={item.nome} key={item._id}
+                            quantidadeProduto={item.quantidadeProduto}
+                            unidadeMedida={item.unidadeMedida}
+                            />
+                          )) 
+                          :  
+                          <section className={style.body__nobody__list}>
+                            <h3>Ainda não existe produtos no almoxarifado.</h3>
+                          </section>
+                      }
+                    </section> 
+                  )
+                  ||
+                  (
                     prodLictEsc && 
                     <section className={style.body__show__cards}>
                       {
@@ -464,64 +496,65 @@ const GL = () => {
                           </section>
                       }
                     </section> 
-
+                  )
                   ||
-
+                  (
                     histoLicit && 
-                      <section className={style.body__show__cards}> 
-                        {
-                          existShowSl != false ? 
-                          existShowSl.map((item) => (
-                            <CardSolicitShow 
-                            key={item._id+item.nome}
-                            _id={item._id}
-                            rt={item.rt}
-                            horario={item.horario} 
-                            nome={item.nome} 
-                            quantidadeProduto={item.quantidadeProduto} 
-                            solicitado={item.solicitado} 
-                            unidadeMedida={item.unidadeMedida} 
-                            merendeira={item.merendeira.name}
-                            idEscola={item.merendeira.fkEscola}
-                            entregue={item.entregue}
-                            totalProduto={item.produto != null ? item.produto.quantidadeProduto : 'Não mais existente no almoxarifado'}
-                            />                      
-                          ))
-                          :
-                          <section className={style.body__nobody__list}>
-                            <h3>Nenhum produto solicitado</h3>
-                          </section>  
-                        }
-                      </section>  
+                    <section className={style.body__show__cards}> 
+                      {
+                        existShowSl !== false ? 
+                        existShowSl.map((item) => (
+                          <CardSolicitShow 
+                          key={item._id+item.nome}
+                          _id={item._id}
+                          rt={item.rt}
+                          horario={item.horario} 
+                          nome={item.nome} 
+                          quantidadeProduto={item.quantidadeProduto} 
+                          solicitado={item.solicitado} 
+                          unidadeMedida={item.unidadeMedida} 
+                          merendeira={item.merendeira.name}
+                          idEscola={item.merendeira.fkEscola}
+                          entregue={item.entregue}
+                          totalProduto={item.produto != null ? item.produto.quantidadeProduto : 'Não mais existente no almoxarifado'}
+                          />                      
+                        ))
+                        :
+                        <section className={style.body__nobody__list}>
+                          <h3>Nenhum produto solicitado</h3>
+                        </section>  
+                      }
+                    </section>  
+                  )
                   ||
-
-                  exit && 
-                  <>
-                    <section className={style.body__show__cards}>
-                      <button className={style.body__button_post} 
-                        onClick={handleLogout}>
-                          <p>
-                            Deixar esta conta
-                            <SVGExit className={style.body__options__svg}/>
-                          </p>
-                      </button>
-                    </section>
-                  </>
-
+                  (
+                    exit && 
+                    <>
+                      <section className={style.body__show__cards}>
+                        <button className={style.body__button_post} 
+                          onClick={handleLogout}>
+                            <p>
+                              Deixar esta conta
+                              <SVGExit className={style.body__options__svg}/>
+                            </p>
+                        </button>
+                      </section>
+                    </>
+                  )
                   ||
-
+                  (
                     <section className={style.body__nobody__option}>
                       <h3>Escolha uma opção</h3>
                       <div className={style.body__icon__option}>
                         <SVGIconeOption />
                       </div>
                     </section>
-                  }
-                </section>
-            </section>
-        }
-      </section>
-    </>
+                  )
+                }
+              </section>
+          </section>
+      }
+    </section>
   )
 
 }
