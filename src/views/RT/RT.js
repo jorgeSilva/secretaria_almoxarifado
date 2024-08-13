@@ -20,25 +20,23 @@ const RT = () => {
   document.title = 'Merenda Escolar | Nutricionista'
 
   const {
-    handleLogout
+    handleLogout,
+    // data
   } = React.useContext(Context)
 
 /* ---------------- ESTADO BANCO DE DADOS -------------------- */
   const url = document.URL.split("/").slice(-1)
-  const [data, setData] = React.useState(null)
   const [produtos, setProdutos] = React.useState(null)
   const [solicitados, setSolicitados] = React.useState(false)
-  const [error, setError] = React.useState(false)
   const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
   const [produtosLicitacao, setProdutosLicitacao] = React.useState(false)
   const [produtosLicitacaoTrue, setProdutosLicitacaoTrue] = React.useState(false)
   
-  async function getUser(){
+  const getUser = React.useCallback(async () => {
     setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
 
     try{
-      setData(data)
 
       if(data){
         const firstAndLastName = data.name.split(' ')
@@ -67,9 +65,9 @@ const RT = () => {
         
       }
     }catch(error){
-      setError(error);
+      setLoading(false)
     }
-  }
+  }, [])
 
 /* -----------------ESTADOS FRONT-END ------------------------  */
 
@@ -91,38 +89,23 @@ const RT = () => {
   const [loading, setLoading] = React.useState(false)
 
   const ProdutosFiltrados = React.useMemo(() => {
-    // const lowerCase = search.toLocaleLowerCase()
-    //   if(produtos && produtosLicitacao){
-    //     setDataSearch(produtos.concat(produtosLicitacao))
-    //     return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-    //   }
-
-    if(prodLict){
-
       const lowerCase = search.toLocaleLowerCase()
-      if(produtos){
-        setDataSearch(produtos)
-        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-      }
+      return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+  }, [search, dataSearch])
+
+  React.useEffect(() => {
+    if(prodLict && produtos){
+      setDataSearch(produtos)
     }
 
-    if(produtosLicitados){
-
-      const lowerCase = search.toLocaleLowerCase()
-      if(produtosLicitacao){
-        setDataSearch(produtosLicitacao)
-        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-      }
+    if(produtosLicitados && produtos){
+      setDataSearch(produtosLicitacao)
     }
 
-    if(histoLicit){
-      const lowerCase = search.toLocaleLowerCase()
-      if(existShowSl){
-        setDataSearch(existShowSl)
-        return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-      }
+    if(histoLicit && produtos){
+      setDataSearch(existShowSl)
     }
-  }, [produtos, produtosLicitacao, existShowSl, search])
+  }, [prodLict, produtos, produtosLicitados, produtosLicitacao, histoLicit, existShowSl])
 
   const handleClickCadPr = () => {
     setCadPr('active')
@@ -139,7 +122,7 @@ const RT = () => {
     setProdLictEsc('')
     setHistoLicit('')
 
-    if(produtos == false){
+    if(produtos === false){
       setProdutosTrue(false)
     }else{
       setProdutosTrue(produtos)
@@ -158,15 +141,10 @@ const RT = () => {
     setProdLictEsc('')
     setHistoLicit('')
 
-    if(produtosLicitacao == false){
+    if(produtosLicitacao === false){
       setProdutosLicitacaoTrue(false)
     }else{
       setProdutosLicitacaoTrue(produtosLicitacao)
-      // for(let i = 0 ; i < produtosLicitacao.length; i++){
-      //   if(produtosLicitacao[i].quantidadeProduto <= 100){
-      //     alert(`O produto: ${produtosLicitacao[i].nome} está com menos de 100 ${produtosLicitacao[i].unidadeMedida} de saldo `)
-      //   }
-      // }
     }
   }
 
@@ -177,7 +155,7 @@ const RT = () => {
     setProdLictEsc('active')
     setHistoLicit('')
 
-    if(solicitados == false){
+    if(solicitados === false){
       setEscTrue(false)
     }else{
       setEscTrue(solicitados)
@@ -191,7 +169,7 @@ const RT = () => {
     setProdLictEsc('')
     setHistoLicit('active')
 
-    if(dataShowSolicitados == false){
+    if(dataShowSolicitados === false){
       setExistShowSl(false)
     }else{
       setExistShowSl(dataShowSolicitados)
@@ -216,7 +194,7 @@ const RT = () => {
       window.location.href = '/'
     }
     getUser()
-  }, [])
+  }, [getUser])
 
   return (
     <>
@@ -245,14 +223,20 @@ const RT = () => {
                 <header className={style.body__header}>
                   <div className={style.body__header__child}>
                     {
-                      date.getHours() < 12 ? 
-                      <h1> Bom dia {name}.</h1> : ''
+                      (
+                        date.getHours() < 12 ? 
+                        <h1> Bom dia {name}.</h1> : ''
+                      )
                       || 
-                      date.getHours() >= 12 && date.getHours() < 18 ? 
-                      <h1>Boa tarde {name}.</h1> : ''
+                      (
+                        date.getHours() >= 12 && date.getHours() < 18 ? 
+                        <h1>Boa tarde {name}.</h1> : ''
+                      )
                       ||
-                      date.getHours() >= 18 ? 
-                      <h1>Boa noite {name}.</h1> : ''
+                      (
+                        date.getHours() >= 18 ? 
+                        <h1>Boa noite {name}.</h1> : ''
+                      )
                     }
 
                     <div className={style.body__container_search}>
@@ -379,82 +363,97 @@ const RT = () => {
                 {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
                 {
-                  cadPr && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Cadastrar produtos</h2>
-                    <p className={style.body__subtitle}>Cadastre os produtos que façam parte da licitação deste ano.</p>
-                  </div>
+                  (
+                    cadPr &&
+                      <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Cadastrar produtos</h2>
+                      <p className={style.body__subtitle}>Cadastre os produtos que façam parte da licitação deste ano.</p>
+                    </div>
+                  ) 
                   ||
-                  prodLict && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos no almoxarifado</h2>
-                    <p className={style.body__subtitle}>
-                      Se deseja editar ou excluir um produto do almoxarifado, aperte no card e selecione "Editar" ou "Exlcuir".
-                    </p>
-                  </div>
+                  (
+                    prodLict && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Produtos no almoxarifado</h2>
+                      <p className={style.body__subtitle}>
+                        Se deseja editar ou excluir um produto do almoxarifado, aperte no card e selecione "Editar" ou "Exlcuir".
+                      </p>
+                    </div>
+                  )
                   || 
-                  produtosLicitados && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos da licitação</h2>
-                    <p className={style.body__subtitle}>
-                      Visualize os produtos da licitação que foram cadastrados.
-                    </p>
-                  </div>
-                  || 
-                  prodLictEsc && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Produtos solicitados por escolas</h2>
-                    <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Acionar Gerente de Logistica".</p>
-                  </div>
-                  || 
-                  histoLicit && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
-                    <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
-                  </div>
+                  (
+                    produtosLicitados && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Produtos da licitação</h2>
+                      <p className={style.body__subtitle}>
+                        Visualize os produtos da licitação que foram cadastrados.
+                      </p>
+                    </div>
+                  )
                   ||
-                  exit && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Troque de conta</h2>
-                    <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
-                  </div>
-                  || 
-                  search && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Digite o nome e faça a busca</h2>
-                    <p className={style.body__subtitle}>Visualize todos os produtos que possuem cada letra informada.</p>
-                  </div>
+                  (
+                    prodLictEsc && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Produtos solicitados por escolas</h2>
+                      <p className={style.body__subtitle}>Clique em um card para selecionar e aperte em "Acionar Gerente de Logistica".</p>
+                    </div>
+                  )
+                  ||
+                  (
+                    histoLicit && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Solicitações feitas por escolas</h2>
+                      <p className={style.body__subtitle}>Visualize todos os produtos solicitados.</p>
+                    </div>
+                  )
+                  ||
+                  (
+                    exit && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Troque de conta</h2>
+                      <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
+                    </div>
+                  )
+                  ||
+                  (
+                    search && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Digite o nome e faça a busca</h2>
+                      <p className={style.body__subtitle}>Visualize todos os produtos que possuem cada letra informada.</p>
+                    </div>
+                  )
                 }
-              
 
                 {
-                  search &&
-                  <section className={style.body__show__cards}>
-                  {
-                    ProdutosFiltrados ?
-                      ProdutosFiltrados.map((item) => (
-                        <Card 
-                        key={item._id+item.nome}
-                        nome={item.nome}
-                        quantidadeProduto={item.quantidadeProduto}
-                        unidadeMedida={item.unidadeMedida}
-                        />
-                      )) 
-                      :  
-                      <section className={style.body__nobody__list}>
-                        <h3>Selecione o botão</h3>
-                        <p>"Produtos no almoxarifado"</p>
-                        <p>"Produtos da licitação"</p> 
-                        {/* <p>"Produtos Solicitados"</p> 
-                        <p>"Historico de Solicitações" </p> */}
-                        <h3> Para a listagem dos produtos.</h3>
-                      </section>
-                  }
-                  </section> 
+                  (
 
+                    search &&
+                    <section className={style.body__show__cards}>
+                    {
+                      ProdutosFiltrados ?
+                        ProdutosFiltrados.map((item) => (
+                          <Card 
+                          key={item._id+item.nome}
+                          nome={item.nome}
+                          quantidadeProduto={item.quantidadeProduto}
+                          unidadeMedida={item.unidadeMedida}
+                          />
+                        )) 
+                        :  
+                        <section className={style.body__nobody__list}>
+                          <h3>Selecione o botão</h3>
+                          <p>"Produtos no almoxarifado"</p>
+                          <p>"Produtos da licitação"</p> 
+                          {/* <p>"Produtos Solicitados"</p> 
+                          <p>"Historico de Solicitações" </p> */}
+                          <h3> Para a listagem dos produtos.</h3>
+                        </section>
+                    }
+                    </section> 
+                  )
                   ||
-
-                  cadPr && 
+                  (
+                    cadPr && 
                     <>
                       {
                         modal 
@@ -499,10 +498,10 @@ const RT = () => {
                         }
                       </section>
                     </>
-
+                  )
                   ||
-
-                  prodLict && 
+                  (
+                    prodLict && 
                     <section className={style.body__show__cards}>
                       {
                         produtosTrue ?
@@ -521,10 +520,10 @@ const RT = () => {
                           </section>
                       }
                     </section> 
-
+                  )
                   ||
-
-                  produtosLicitados && 
+                  (
+                    produtosLicitados && 
                     <section className={style.body__show__cards}>
                       {
                         produtosLicitacaoTrue ?
@@ -544,10 +543,10 @@ const RT = () => {
                           </section>
                       }
                     </section> 
-
+                  )
                   ||
-
-                  prodLictEsc && 
+                  (
+                    prodLictEsc && 
                     <section className={style.body__show__cards}>
                       {
                         escTrue ?
@@ -572,10 +571,10 @@ const RT = () => {
                         </section>                   
                       }
                     </section>  
-
+                  )
                   ||
-
-                  histoLicit && 
+                  (
+                    histoLicit && 
                     <section className={style.body__show__cards}> 
                       {
                         existShowSl ? 
@@ -601,23 +600,23 @@ const RT = () => {
                         </section>  
                       }
                     </section>  
+                  )
                   ||
-
-                  exit && 
-                  <>
-                    <section className={style.body__show__cards}>
-                      <button className={style.body__button_post} 
-                        onClick={handleLogout}>
-                          <p>
-                            Deixar esta conta
-                            <SVGExit className={style.body__options__svg}/>
-                          </p>
-                      </button>
-                    </section>
-                  </>
-
+                  (
+                    exit && 
+                    <>
+                      <section className={style.body__show__cards}>
+                        <button className={style.body__button_post} 
+                          onClick={handleLogout}>
+                            <p>
+                              Deixar esta conta
+                              <SVGExit className={style.body__options__svg}/>
+                            </p>
+                        </button>
+                      </section>
+                    </>
+                  )
                   ||
-
                   <section className={style.body__nobody__option}>
                     <h3>Escolha uma opção</h3>
                     <div className={style.body__icon__option}>

@@ -5,6 +5,7 @@ const Context = React.createContext()
 
 function AuthProvider({children}){
   const [authenticated, setAuthenticated] = React.useState(false)
+  const [data, setData] = React.useState(false)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(null)
 
@@ -34,6 +35,7 @@ function AuthProvider({children}){
       localStorage.setItem('token', JSON.stringify(data.token))
       api.defaults.headers.Authorization = `Bearer ${data.token}`
       setAuthenticated(true)
+      setData(data.user)
       
       const patamar = data.user.email.split('_')[0]
       const id = data.user._id
@@ -64,7 +66,7 @@ function AuthProvider({children}){
   }, [])
 
   return (
-    <Context.Provider value={{loading, authenticated, handleLogin, handleChangeEmail, handleChangePassword, handleLogout, error}}>
+    <Context.Provider value={{data, loading, authenticated, handleLogin, handleChangeEmail, handleChangePassword, handleLogout, error}}>
       {children}
     </Context.Provider>
   )
