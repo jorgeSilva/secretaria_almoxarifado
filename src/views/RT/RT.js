@@ -32,6 +32,58 @@ const RT = () => {
   const [produtosLicitacao, setProdutosLicitacao] = React.useState(false)
   const [produtosLicitacaoTrue, setProdutosLicitacaoTrue] = React.useState(false)
   
+  const getSecretariaProdutos = React.useCallback(async (id) => {
+    setLoading(true)
+    try{
+      const {data} = await api.get(`/secretaria/produtos/${id}`)
+      setProdutos(data)
+      
+      setLoading(false)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getRTFalseSolicitados = React.useCallback(async (id) => {
+    setLoading(true)
+
+    try{
+      const {data} = await api.get(`/rtFalse/${id}`)
+      setSolicitados(data)
+      
+      setLoading(false)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getDataShowSolicitado = React.useCallback(async (id) => {
+    setLoading(true)
+
+    try{
+      const {data} = await api.get(`/rt/secretaria/${id}`)
+      setDataShowSolicitados(data)
+
+      setLoading(false)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
+  const getLicitacaoProdutos = React.useCallback(async (id) => {
+    setLoading(true)
+
+    try{
+      const {data} = await api.get(`/licitacao/produtos/${id}`)
+      setProdutosLicitacao(data)
+      setValueCadPr(data.at(-1))
+
+      setLoading(false)
+    }catch(e){
+      setLoading(false)
+    }
+  }, [])
+
   const getUser = React.useCallback(async () => {
     setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
@@ -42,24 +94,10 @@ const RT = () => {
         const firstAndLastName = data.name.split(' ')
         setName(firstAndLastName.shift().concat(` ${firstAndLastName.pop()}`) )
         
-        await api.get(`/secretaria/produtos/${data.secretaria}`)
-          .then(({data}) => setProdutos(data))
-            .catch(e => console.log(e))
-
-        await api.get(`/rtFalse/${data.secretaria}`)
-          .then(({data}) => setSolicitados(data))
-            .catch(e => console.log(e))
-        
-        await api.get(`/rt/secretaria/${data.secretaria}`)
-          .then(({data}) => setDataShowSolicitados(data))
-            .catch(e => console.log(e))
-        
-        await api.get(`/licitacao/produtos/${data.secretaria}`)
-          .then(({data}) => {
-            setProdutosLicitacao(data)
-            setValueCadPr(data.at(-1))
-          })
-            .catch(e => console.log(e))
+        getSecretariaProdutos(data.secretaria)
+        getRTFalseSolicitados(data.secretaria)
+        getDataShowSolicitado(data.secretaria)
+        getLicitacaoProdutos(data.secretaria)
 
         setLoading(false)
         
@@ -67,7 +105,7 @@ const RT = () => {
     }catch(error){
       setLoading(false)
     }
-  }, [])
+  }, [getSecretariaProdutos, getRTFalseSolicitados, getDataShowSolicitado, getLicitacaoProdutos])
 
 /* -----------------ESTADOS FRONT-END ------------------------  */
 
