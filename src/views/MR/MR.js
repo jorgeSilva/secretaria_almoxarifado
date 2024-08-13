@@ -22,13 +22,11 @@ const MR = () => {
   const url = document.URL.split("/").slice(-1)
   const [data, setData] = React.useState(null)
   const [name, setName] = React.useState('')
-  const [lastRequisited, setLastRequisited] = React.useState(false)
   const [ultimoRequisited, setUltimoRequisited] = React.useState(false)
   const [produtos, setProdutos] = React.useState(null)
-  const [error, setError] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
 
-  async function getUser(){
+  const getUser = React.useCallback(async () => {
     setLoading(true)
     const {data} = await api.get(`/usuario/${url}`)
     try{
@@ -40,33 +38,32 @@ const MR = () => {
       }
       setLoading(false)
     }catch(error){
-      console.log(error);
+      setLoading(false)
     }
-  }
+  }, [url])
 
-  async function getRequisited(){
+  const getRequisited = React.useCallback(async () => {
     setLoading(true)
     await api.get(`/rt/${url}`)
       .then(({data}) => {
-        setLastRequisited(data)
         setUltimoRequisited(data.at(-1))
         setLoading(false)
       })
         .catch(error => console.log(error))
-  }
+  }, [url])
 
-  async function getSolicitados(){
+  const getSolicitados = React.useCallback(async () => {
     setLoading(true)
     const { data } = await api.get(`/rt/gl/aprovados/${url}`)
       try{
-        if(data == true || data){
+        if(data === true || data){
           setProdutos(data)
         }
         setLoading(false)
       }catch(error){
-        setError(error)
+        setLoading(false)
       }
-  }
+  }, [url])
 
   const {
     handleLogout
@@ -78,22 +75,20 @@ const MR = () => {
   const [solicitar, setSolicitar] = React.useState('')
   const [active, setActive] = React.useState(false)
   const [atualizar, setAtualizar] = React.useState('')
-  const [valuesolicitar, setValuesolicitar] = React.useState('')
   const [exit, setExit] = React.useState('')
   const [search, setSearch] = React.useState('')
   const [dataSearch, setDataSearch] = React.useState([])
 
   const ProdutosFiltrados = React.useMemo(() => {
     const lowerCase = search.toLocaleLowerCase()
+    return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
+  }, [search, dataSearch])
 
+  React.useEffect(() => {
     if(produtos){
       setDataSearch(produtos)
-      setValuesolicitar(produtos.at(-1))
     }
-
-    return dataSearch.filter((item) => item.nome.toLocaleLowerCase().includes(lowerCase))
-
-  }, [produtos, search])
+  }, [produtos])
 
   const handleClicksolicitar = () => {
       setSolicitar('active')
@@ -106,7 +101,7 @@ const MR = () => {
     setSolicitar('')
     setAtualizar('active')
 
-    if(produtos == false){
+    if(produtos === false){
       setAttRecem(false)
     }else{
       setAttRecem(produtos)
@@ -126,7 +121,7 @@ const MR = () => {
     getUser()
     getRequisited()
     getSolicitados()
-  }, [])
+  }, [getUser, getRequisited, getSolicitados])
 
   return (
     <>
@@ -155,14 +150,20 @@ const MR = () => {
                 <header className={style.body__header}>
                   <div className={style.body__header__child}>
                     {
-                      date.getHours() < 12 ? 
-                      <h1> Bom dia {name}.</h1> : ''
+                      (
+                        date.getHours() < 12 ? 
+                        <h1> Bom dia {name}.</h1> : ''
+                      )
                       || 
-                      date.getHours() >= 12 && date.getHours() < 18 ? 
-                      <h1>Boa tarde {name}.</h1> : ''
+                      (
+                        date.getHours() >= 12 && date.getHours() < 18 ? 
+                        <h1>Boa tarde {name}.</h1> : ''
+                      )
                       ||
-                      date.getHours() >= 18 ? 
-                      <h1>Boa noite {name}.</h1> : ''
+                      (
+                        date.getHours() >= 18 ? 
+                        <h1>Boa noite {name}.</h1> : ''
+                      )
                     }
 
                     <div className={style.body__container_search}>
@@ -236,47 +237,54 @@ const MR = () => {
                 {/* ---------------- EXIBIÇÃO CONFORME A OPÇÃO SELECIONADA ---------- */}
 
                 {
-                  solicitar && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Solicitar produtos</h2>
-                    <p className={style.body__subtitle}>Clique em "Solicitar produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
-                  </div>
-                    ||
-                  atualizar && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Atualizar produtos recém chegados</h2>
-                    <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
-                  </div>
+                  (
+                    solicitar &&
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Solicitar produtos</h2>
+                      <p className={style.body__subtitle}>Clique em "Solicitar produto" para fazer os pedidos dos produtos requisitados em sua escola.</p>
+                    </div>
+                  )
                   ||
-                  exit && 
-                  <div className={style.body__container__title_subtitle}>
-                    <h2 className={style.body__title}>Troque de conta</h2>
-                    <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
-                  </div>
+                  (
+                    atualizar && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Atualizar produtos recém chegados</h2>
+                      <p className={style.body__subtitle}>Confira se foi enviado todos os produtos para sua escola.</p>
+                    </div>
+                  )
+                  ||
+                  (
+                    exit && 
+                    <div className={style.body__container__title_subtitle}>
+                      <h2 className={style.body__title}>Troque de conta</h2>
+                      <p className={style.body__subtitle}>Aperte no botão "Deixar esta conta" para que volte a tela de login.</p>
+                    </div>
+                  )
                 }
                 
                 {
-                  search &&
-                  <section className={style.body__show__cards}>
-                  {
-                    ProdutosFiltrados ?
-                      ProdutosFiltrados.map((item) => (
-                        <CardModal
-                        nome={item.nome} key={item._id}
-                        quantidadeProduto={item.quantidadeProduto}
-                        unidadeMedida={item.unidadeMedida}
-                        />
-                      )) 
-                      :  
-                      <section className={style.body__nobody__list}>
-                        <h3>Ainda não existe produtos no almoxarifado.</h3>
-                      </section>
-                  }
-                  </section> 
-
+                  (
+                    search &&
+                    <section className={style.body__show__cards}>
+                    {
+                      ProdutosFiltrados ?
+                        ProdutosFiltrados.map((item) => (
+                          <CardModal
+                          nome={item.nome} key={item._id}
+                          quantidadeProduto={item.quantidadeProduto}
+                          unidadeMedida={item.unidadeMedida}
+                          />
+                        )) 
+                        :  
+                        <section className={style.body__nobody__list}>
+                          <h3>Ainda não existe produtos no almoxarifado.</h3>
+                        </section>
+                    }
+                    </section> 
+                  )
                   ||
-
-                  solicitar && 
+                  (
+                    solicitar && 
                     <>
                       <section className={style.body__show__cards}>
                         {
@@ -310,10 +318,10 @@ const MR = () => {
                         }
                       </section>
                     </>
-
+                  )
                   ||
-
-                  atualizar && 
+                  (
+                    atualizar && 
                     <section className={style.body__show__cards}>
                       {
                         attRecem ?
@@ -340,30 +348,31 @@ const MR = () => {
                           
                       }
                     </section>
-                  
+                  )
                   ||
-
-                  exit && 
-                  <>
-                    <section className={style.body__show__cards}>
-                      <button className={style.body__button_post} 
-                        onClick={handleLogout}>
-                          <p>
-                            Deixar esta conta
-                            <SVGExit className={style.body__options__svg}/>
-                          </p>
-                      </button>
+                  (
+                    exit && 
+                    <>
+                      <section className={style.body__show__cards}>
+                        <button className={style.body__button_post} 
+                          onClick={handleLogout}>
+                            <p>
+                              Deixar esta conta
+                              <SVGExit className={style.body__options__svg}/>
+                            </p>
+                        </button>
+                      </section>
+                    </>
+                  )
+                  ||
+                  (
+                    <section className={style.body__nobody__option}>
+                      <h3>Escolha uma opção</h3>
+                      <div className={style.body__icon__option}>
+                        <SVGIconeOption />
+                      </div>
                     </section>
-                  </>
-
-                  ||
-
-                  <section className={style.body__nobody__option}>
-                  <h3>Escolha uma opção</h3>
-                  <div className={style.body__icon__option}>
-                    <SVGIconeOption />
-                  </div>
-                </section>
+                  )
                 }
               </section>
             </section>

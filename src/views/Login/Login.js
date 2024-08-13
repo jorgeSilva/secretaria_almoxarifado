@@ -4,12 +4,10 @@ import Email from '../../components/Input/Email/Email'
 import style from './style.module.css'
 import img from '../../assets/undraw_engineering_team_a7n2 1.svg'
 import { Context } from '../../context/authContext'
-import isConnected from '../../utils/isConnected'
 
 const Login = () => {
 
   const {
-    authenticated, 
     handleLogin, 
     handleChangeEmail, 
     handleChangePassword,

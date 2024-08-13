@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AuthProvider, Context } from './context/authContext';
+import { AuthProvider } from './context/authContext';
 import { ProdutoProvider } from './context/createContext';
 import Login from './views/Login/Login'
 import MR from './views/MR/MR'
