@@ -14,11 +14,12 @@ import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
 import {ReactComponent as SvgPrancheta} from  '../../assets/Prancheta.svg'
 import ModalGL from '../../components/ModalGL/Modal'
 import { Context } from '../../context/authContext'
+import { useParams } from 'react-router-dom'
 
 const GL = () => {
   document.title = 'Merenda Escolar | Gerente Logistica'
 
-  const url = document.URL.split("/").slice(-1)
+  const {_id} = useParams()
   const [data, setData] = React.useState(null)
   const [produtos, setProdutos] = React.useState(null)
   const [solicitados, setSolicitados] = React.useState(false)
@@ -58,7 +59,7 @@ const GL = () => {
 
   const getUser = React.useCallback(async () => {
     setLoading(true)
-    const {data} = await api.get(`/usuario/${url}`)
+    const {data} = await api.get(`/usuario/${_id}`)
 
     try{
       setData(data)
@@ -74,7 +75,7 @@ const GL = () => {
     }catch(error){
       setLoading(false)
     }
-  }, [getDataShowSolicitado, getSecretariaProdutos, getSecretariaSolicitados])
+  }, [getDataShowSolicitado, getSecretariaProdutos, getSecretariaSolicitados, _id])
 
   const {
     handleLogout

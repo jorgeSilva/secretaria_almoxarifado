@@ -15,6 +15,7 @@ import ModalRT from '../../components/ModalRT/Modal'
 import CardSolicit from '../../components/CardSolicitSchool/CardSolicit'
 import CardSolicitShow from '../../components/CardSolicitRT/CardSolicitShow'
 import { Context } from '../../context/authContext'
+import { useParams } from 'react-router-dom'
 
 const RT = () => {
   document.title = 'Merenda Escolar | Nutricionista'
@@ -25,7 +26,7 @@ const RT = () => {
   } = React.useContext(Context)
 
 /* ---------------- ESTADO BANCO DE DADOS -------------------- */
-  const url = document.URL.split("/").slice(-1)
+  const {_id} = useParams()
   const [produtos, setProdutos] = React.useState(null)
   const [solicitados, setSolicitados] = React.useState(false)
   const [dataShowSolicitados, setDataShowSolicitados] = React.useState(false)
@@ -86,7 +87,7 @@ const RT = () => {
 
   const getUser = React.useCallback(async () => {
     setLoading(true)
-    const {data} = await api.get(`/usuario/${url}`)
+    const {data} = await api.get(`/usuario/${_id}`)
 
     try{
 
@@ -105,7 +106,7 @@ const RT = () => {
     }catch(error){
       setLoading(false)
     }
-  }, [getSecretariaProdutos, getRTFalseSolicitados, getDataShowSolicitado, getLicitacaoProdutos])
+  }, [getSecretariaProdutos, getRTFalseSolicitados, getDataShowSolicitado, getLicitacaoProdutos, _id])
 
 /* -----------------ESTADOS FRONT-END ------------------------  */
 

@@ -11,6 +11,7 @@ import CardModal from '../../components/ModalMR/Modal'
 import Card from '../../components/Card/Card'
 import CardSolicit from '../../components/CardSolicitMR/CardSolicit'
 import { Context } from '../../context/authContext'
+import { useParams } from 'react-router-dom'
 
 const MR = () => {
 
@@ -19,7 +20,7 @@ const MR = () => {
 
 /* ---------------- ESTADO BANCO DE DADOS -------------------- */
 
-  const url = document.URL.split("/").slice(-1)
+  const {_id} = useParams()
   const [data, setData] = React.useState(null)
   const [name, setName] = React.useState('')
   const [ultimoRequisited, setUltimoRequisited] = React.useState(false)
@@ -28,7 +29,7 @@ const MR = () => {
 
   const getUser = React.useCallback(async () => {
     setLoading(true)
-    const {data} = await api.get(`/usuario/${url}`)
+    const {data} = await api.get(`/usuario/${_id}`)
     try{
       setData(data)
 
@@ -40,21 +41,21 @@ const MR = () => {
     }catch(error){
       setLoading(false)
     }
-  }, [url])
+  }, [_id])
 
   const getRequisited = React.useCallback(async () => {
     setLoading(true)
-    await api.get(`/rt/${url}`)
+    await api.get(`/rt/${_id}`)
       .then(({data}) => {
         setUltimoRequisited(data.at(-1))
         setLoading(false)
       })
         .catch(error => console.log(error))
-  }, [url])
+  }, [_id])
 
   const getSolicitados = React.useCallback(async () => {
     setLoading(true)
-    const { data } = await api.get(`/rt/gl/aprovados/${url}`)
+    const { data } = await api.get(`/rt/gl/aprovados/${_id}`)
       try{
         if(data === true || data){
           setProdutos(data)
@@ -63,7 +64,7 @@ const MR = () => {
       }catch(error){
         setLoading(false)
       }
-  }, [url])
+  }, [_id])
 
   const {
     handleLogout
